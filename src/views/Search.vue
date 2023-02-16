@@ -23,6 +23,9 @@
         <!-- <a-select-option value="review-count">리뷰 많은 순</a-select-option> -->
       </a-select>
     </section>
+    <section v-else class="empty-search-screen">
+      검색된 매장이 없습니다.
+    </section>
     <RestaurantList :datas="datas" :direction-type="'row'" />
   </section>
 </template>
@@ -38,12 +41,18 @@
 .search-page {
   padding-bottom: 70px;
 }
+
+.empty-search-screen {
+  margin: auto;
+  text-align: center;
+  font-size: 15px;
+}
 </style>
 
 <script>
 import RestaurantList from "@/components/RestaurantList.vue";
 
-const DATA_COUNT = 10;
+const DATA_COUNT = 0;
 const MOCK_DATA = [];
 for (let i = 1; i <= DATA_COUNT; i++) {
   MOCK_DATA.push({
