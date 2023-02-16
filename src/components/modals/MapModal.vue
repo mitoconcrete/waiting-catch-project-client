@@ -34,13 +34,9 @@ export default {
       this.map = await this.drawMap(latitude, longitude);
       await this.setAdressFromPosition(latitude, longitude);
       this.marker = await this.drawMarker(latitude, longitude);
-      const marker = this.marker;
-      let stringAddress = "";
       if (this.map && this.marker) {
-        console.log(this.map, this.marker);
         this.kakao.maps.event.addListener(this.map, "click", this.clickMarker);
       }
-      console.log(stringAddress);
     });
   },
   methods: {

@@ -2,7 +2,7 @@
   <header class="map-selector">
     <button>
       <div></div>
-      <strong>경기도 남양주시 순화궁로</strong>
+      <strong>{{ stringAddress }}</strong>
     </button>
     <button></button>
   </header>
@@ -108,9 +108,33 @@ export default {
   components: {
     RestaurantList,
   },
+  mounted() {
+    if (!this.stringAddress) {
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        const { latitude, longitude } = coords;
+        const geocoder = new window.kakao.maps.services.Geocoder();
+
+        const coord = new window.kakao.maps.LatLng(latitude, longitude);
+        geocoder.coord2Address(
+          coord.getLng(),
+          coord.getLat(),
+          (result, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              if (result[0].road_address) {
+                this.stringAddress = result[0].road_address.address_name;
+              } else {
+                this.stringAddress = result[0].address.address_name;
+              }
+            }
+          }
+        );
+      });
+    }
+  },
   data() {
     return {
       datas: MOCK_DATA,
+      stringAddress: "",
     };
   },
 };

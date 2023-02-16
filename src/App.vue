@@ -14,7 +14,7 @@ export default {
 <template>
   <main>
     <div class="wrapper">
-      <MapModal />
+      <!-- <MapModal /> -->
       <section class="screen-wrapper">
         <RouterView />
       </section>

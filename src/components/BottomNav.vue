@@ -69,7 +69,7 @@ nav {
     div {
       width: 30px;
       height: 30px;
-      background-image: url("icon/d_home.png");
+      background-image: url("/icon/d_home.png");
       margin-bottom: 5px;
     }
   }
@@ -78,7 +78,7 @@ nav {
     div {
       width: 25px;
       height: 25px;
-      background-image: url("icon/d_search.png");
+      background-image: url("/icon/d_search.png");
       margin-bottom: 8px;
     }
   }
@@ -87,7 +87,7 @@ nav {
     div {
       width: 23px;
       height: 23px;
-      background-image: url("icon/d_profile.png");
+      background-image: url("/icon/d_profile.png");
       margin-bottom: 8px;
     }
   }
@@ -98,18 +98,18 @@ nav {
   color: rgb(140, 96, 200);
   .link-wrapper.home {
     div {
-      background-image: url("icon/a_home.png");
+      background-image: url("/icon/a_home.png");
     }
   }
   .link-wrapper.search {
     div {
-      background-image: url("icon/a_search.png");
+      background-image: url("/icon/a_search.png");
     }
   }
 
   .link-wrapper.profile {
     div {
-      background-image: url("icon/a_profile.png");
+      background-image: url("/icon/a_profile.png");
     }
   }
 }
