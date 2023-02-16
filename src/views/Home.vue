@@ -31,8 +31,6 @@
 
 <style lang="scss">
 .home-page.page-wrapper {
-  margin: 70px 20px 90px 20px;
-
   header {
     display: flex;
     justify-content: space-between;
@@ -49,7 +47,8 @@
   height: 60px;
   display: flex;
   justify-content: space-between;
-  position: fixed;
+  position: sticky;
+  top: 0;
   background-color: #fff;
   z-index: 999;
   button:first-child {

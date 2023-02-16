@@ -1,16 +1,19 @@
 <script>
 import { RouterView } from "vue-router";
 import BottomNav from "./components/BottomNav.vue";
+import MapModal from "./components/modals/MapModal.vue";
 
 export default {
   components: {
     BottomNav,
+    MapModal,
   },
 };
 </script>
 
 <template>
   <main>
+    <!-- <MapModal /> -->
     <div class="wrapper">
       <section class="screen-wrapper">
         <RouterView />
@@ -27,11 +30,9 @@ main {
   max-width: 480px;
   height: 100%;
   margin: auto;
-  overflow: auto;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  box-shadow: 0 0 20px rgb(0 0 0 / 5%);
+  overflow: hidden;
+
+  box-shadow: 0 0 20px 0 rgb(0 0 0 / 5%);
 }
 .wrapper {
   position: relative;
@@ -42,13 +43,16 @@ main {
 
   .screen-wrapper {
     flex: 1;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .page-wrapper {
     padding: 20px;
-    height: 100%;
+    margin-bottom: 80px;
     flex-direction: column;
-    overflow: hidden;
   }
 }
 </style>
