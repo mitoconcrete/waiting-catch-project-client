@@ -13,9 +13,12 @@
     >
       <a-form-item
         name="username"
-        :rules="[{ required: true, message: 'Please input your username!' }]"
+        :rules="[{ required: true, message: '아이디를 입력하세요.' }]"
       >
-        <a-input v-model:value="formState.username">
+        <a-input
+          placeholder="아이디를 입력하세요."
+          v-model:value="formState.username"
+        >
           <template #prefix>
             <UserOutlined class="site-form-item-icon" />
           </template>
@@ -24,9 +27,12 @@
 
       <a-form-item
         name="password"
-        :rules="[{ required: true, message: 'Please input your password!' }]"
+        :rules="[{ required: true, message: '패스워드를 입력하세요.' }]"
       >
-        <a-input-password v-model:value="formState.password">
+        <a-input-password
+          placeholder="패스워드를 입력하세요."
+          v-model:value="formState.password"
+        >
           <template #prefix>
             <LockOutlined class="site-form-item-icon" />
           </template>
