@@ -84,19 +84,18 @@ export default {
       font-size: 13px;
       text-align: center;
       line-height: 40px;
-      border-radius: 8px;
+      border-radius: 0 8px 0 0;
 
       &.no-wait {
-        background-color: rgba(145, 201, 133, 0.8);
+        background-color: rgba(145, 201, 133, 0.7);
       }
 
       &.normal-wait {
-        color: #000;
-        background-color: rgba(255, 253, 192, 0.8);
+        background-color: rgba(248, 213, 62, 0.7);
       }
 
       &.hard-wait {
-        background-color: rgba(252, 36, 6, 0.8);
+        background-color: rgba(252, 36, 6, 0.7);
       }
     }
   }
