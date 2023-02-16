@@ -38,7 +38,7 @@
       img {
         width: 20px;
         height: 20px;
-        margin: auto 0 auto 10px;
+        margin: auto 0 auto 15px;
       }
     }
   }
