@@ -13,8 +13,8 @@ export default {
 
 <template>
   <main>
-    <!-- <MapModal /> -->
     <div class="wrapper">
+      <MapModal />
       <section class="screen-wrapper">
         <RouterView />
       </section>
