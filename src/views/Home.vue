@@ -22,7 +22,10 @@
         </a-select> -->
       </section>
     </header>
-    <RestaurantList :datas="mock" :direction-type="'column'" />
+    <section v-if="!datas.length" class="empty-search-screen">
+      주변에 매장이 없습니다.
+    </section>
+    <RestaurantList :datas="datas" :direction-type="'column'" />
   </section>
 </template>
 
@@ -86,7 +89,7 @@
 
 <script>
 import RestaurantList from "@/components/RestaurantList.vue";
-const DATA_COUNT = 10;
+const DATA_COUNT = 0;
 const MOCK_DATA = [];
 for (let i = 1; i <= DATA_COUNT; i++) {
   MOCK_DATA.push({
@@ -108,7 +111,7 @@ export default {
   },
   data() {
     return {
-      mock: MOCK_DATA,
+      datas: MOCK_DATA,
     };
   },
 };
