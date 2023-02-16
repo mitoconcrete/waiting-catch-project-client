@@ -89,7 +89,7 @@
 
 <script>
 import RestaurantList from "@/components/RestaurantList.vue";
-const DATA_COUNT = 0;
+const DATA_COUNT = 10;
 const MOCK_DATA = [];
 for (let i = 1; i <= DATA_COUNT; i++) {
   MOCK_DATA.push({
