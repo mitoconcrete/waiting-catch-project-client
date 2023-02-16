@@ -26,6 +26,21 @@ export default {
 };
 </script>
 <style lang="scss">
+nav {
+  max-width: 480px;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  a {
+    margin: auto;
+  }
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  box-shadow: 0 0 20px rgb(0 0 0 / 5%);
+}
 .link {
   text-decoration: none;
   font-size: 13px;

@@ -15,20 +15,26 @@ export default {
       <section class="screen-wrapper">
         <RouterView />
       </section>
-      <BottomNav />
     </div>
+    <BottomNav />
   </main>
 </template>
 
 <style lang="scss">
 main {
+  position: relative;
   width: 100%;
   max-width: 480px;
   height: 100%;
   margin: auto;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   box-shadow: 0 0 20px rgb(0 0 0 / 5%);
 }
 .wrapper {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
@@ -36,17 +42,6 @@ main {
 
   .screen-wrapper {
     flex: 1;
-  }
-
-  nav {
-    width: 100%;
-    height: 80px;
-    display: flex;
-    justify-content: space-around;
-    a {
-      margin: auto;
-    }
-    box-shadow: 0 0 20px rgb(0 0 0 / 5%);
   }
 }
 </style>
