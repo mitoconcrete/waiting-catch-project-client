@@ -35,6 +35,10 @@ nav {
   background-color: #fff;
   a {
     margin: auto;
+
+    &:hover {
+      color: inherit;
+    }
   }
   position: fixed;
   bottom: 0;
@@ -81,8 +85,8 @@ nav {
 
   .link-wrapper.profile {
     div {
-      width: 25px;
-      height: 25px;
+      width: 23px;
+      height: 23px;
       background-image: url("icon/d_profile.png");
       margin-bottom: 8px;
     }
