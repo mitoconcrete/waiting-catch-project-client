@@ -11,3 +11,7 @@ body {
   font-family: "-apple-system", BlinkMacSystemFont, "Apple SD Gothic Neo", Inter,
     Lato, "Noto Sans KR", "Spoqa Han Sans", "Segoe UI", sans-serif;
 }
+
+button {
+  cursor: pointer;
+}
