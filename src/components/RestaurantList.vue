@@ -10,7 +10,17 @@
         :style="{
           backgroundImage: `url(${data.imagePath})`,
         }"
-      ></section>
+      >
+        <span
+          :class="
+            'status-badge ' +
+            (data.waitingCount > 5 ? 'hard-wait' : 'normal-wait')
+          "
+          v-if="data.waitingCount"
+          >대기 {{ data.waitingCount }}팀</span
+        >
+        <span class="status-badge no-wait" v-else>대기 없음</span>
+      </section>
       <section class="description-section" v-if="directionType === 'row'">
         <span class="sub-info">{{ data.category }}</span>
         <h3>{{ data.name }}</h3>
@@ -56,21 +66,51 @@ export default {
   }
 
   .photo-section {
+    position: relative;
     width: 100%;
     background-repeat: no-repeat;
     background-size: cover;
     border-radius: 10px;
+    overflow: hidden;
+
+    .status-badge {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 60px;
+      height: 40px;
+      z-index: 10;
+      color: #fff;
+      font-size: 13px;
+      text-align: center;
+      line-height: 40px;
+      border-radius: 8px;
+
+      &.no-wait {
+        background-color: rgba(145, 201, 133, 0.8);
+      }
+
+      &.normal-wait {
+        color: #000;
+        background-color: rgba(255, 253, 192, 0.8);
+      }
+
+      &.hard-wait {
+        background-color: rgba(252, 36, 6, 0.8);
+      }
+    }
   }
 
   .ant-rate {
     display: flex;
     font-size: 15px;
     width: 100px;
+    line-height: 15px;
   }
 
   .direction-row {
     flex-direction: column;
-    width: calc(50% - 15px);
+    width: calc(50% - 10px);
     .photo-section {
       width: 100%;
       height: 150px;
@@ -80,6 +120,7 @@ export default {
       h3 {
         margin: 0;
         font-size: 20px;
+        line-height: 1.3;
       }
       .sub-info {
         color: rgb(200, 200, 200);
@@ -97,6 +138,7 @@ export default {
       h3 {
         margin: 0;
         font-size: 20px;
+        line-height: 1.3;
       }
       .sub-info {
         color: rgb(200, 200, 200);

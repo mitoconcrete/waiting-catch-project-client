@@ -6,9 +6,9 @@
     </button>
     <button></button>
   </header>
-  <section class="home-wrapper">
+  <section class="home-page page-wrapper">
     <header>
-      <h1>내 주변에 어떤 곳이 있을까?</h1>
+      <h1>어디를 가볼까?</h1>
       <section class="filter-section">
         <a-select placeholder="정렬 순서" style="width: 200px">
           <a-select-option value="distance">가까운 순</a-select-option>
@@ -27,16 +27,13 @@
 </template>
 
 <style lang="scss">
-.home-wrapper {
-  margin: 70px 20px 20px 20px;
-  height: 100%;
-  flex-direction: column;
-  overflow: hidden;
+.home-page.page-wrapper {
+  margin: 70px 20px 90px 20px;
 
   header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     h1 {
       margin: 0;
     }
@@ -100,10 +97,10 @@ for (let i = 1; i <= DATA_COUNT; i++) {
     rate: 5,
     category: "한식",
     distance: 3.5,
+    waitingCount: i - 1,
   });
 }
 
-console.log(MOCK_DATA);
 export default {
   name: "home",
   components: {

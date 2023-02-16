@@ -36,12 +36,18 @@ main {
 .wrapper {
   position: relative;
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
 
   .screen-wrapper {
     flex: 1;
+  }
+
+  .page-wrapper {
+    margin: 20px;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
   }
 }
 </style>
