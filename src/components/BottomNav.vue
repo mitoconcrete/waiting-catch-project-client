@@ -95,6 +95,7 @@ nav {
 
 .link.active {
   font-weight: bold;
+  color: rgb(140, 96, 200);
   .link-wrapper.home {
     div {
       background-image: url("icon/a_home.png");
