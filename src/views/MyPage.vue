@@ -1,13 +1,15 @@
 <template>
   <section class="page-wrapper profile-page">
     <header>
-      <button>
-        <strong>mitoconcrete 님</strong>
+      <button @click="userProfile.nickname ? goProfilePage() : goLoginPage()">
+        <strong>{{
+          userProfile.nickname ? `${userProfile.nickname} 님` : "-"
+        }}</strong>
         <img class="present-icon" src="/icon/r_forward.png" />
       </button>
     </header>
     <ul>
-      <li v-for="menu in menus">
+      <li v-for="menu in menus" @click="goNextPage(menu.page)">
         <div
           class="icon-wrapper present-icon"
           :style="{ backgroundImage: `url(${menu.imgSrc})` }"
@@ -100,7 +102,7 @@ for (let i = 1; i <= LINE_UP_COUNT; i++) {
 
 const MENU = [
   { name: "줄서기 내역", page: "/lineup", imgSrc: "/icon/history.png" },
-  { name: "작성 리뷰 내역", page: "/review", imgSrc: "/icon/review.png" },
+  { name: "작성 리뷰 내역", page: "/reviews", imgSrc: "/icon/review.png" },
 ];
 export default {
   name: "MyPage",
@@ -109,7 +111,21 @@ export default {
       linupList: LINE_UP_MOCK_DATA,
       reviewList: REVIEW_MOCK_DATA,
       menus: MENU,
+      userProfile: {
+        nickname: "Mitoconcrete",
+      },
     };
+  },
+  methods: {
+    goLoginPage() {
+      this.$router.push("login");
+    },
+    goProfilePage() {
+      this.$router.push("/info/detail");
+    },
+    goNextPage(page) {
+      this.$router.push(page);
+    },
   },
 };
 </script>

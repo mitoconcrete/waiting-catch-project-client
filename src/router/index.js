@@ -30,8 +30,18 @@ const router = createRouter({
     },
     {
       path: "/find/password",
-      name: "password",
+      name: "find-password",
       component: () => import("@/views/FindPassword.vue"),
+    },
+    {
+      path: "/reviews",
+      name: "review",
+      component: () => import("@/views/MyReviewList.vue"),
+    },
+    {
+      path: "/info/detail",
+      name: "user-detail",
+      component: () => import("@/views/InfoManage.vue"),
     },
   ],
 });

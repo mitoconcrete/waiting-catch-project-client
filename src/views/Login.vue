@@ -1,10 +1,6 @@
 <template>
   <section class="login-form-wrapper">
-    <header>
-      <button @click="moveBackward">
-        <img src="/icon/backward.png" alt="backward" />
-      </button>
-    </header>
+    <BackwardButton @click="moveBackward" message="로그인" />
     <section class="icon-wrapper">
       <img src="/icon/w.png" alt="service-logo" />
       <h1>웨이팅캐치</h1>
@@ -75,18 +71,6 @@
 .login-form-wrapper {
   padding: 30px;
   margin: auto;
-  header {
-    button {
-      width: 50px;
-      height: 50px;
-      border: none;
-      background-color: inherit;
-      img {
-        width: 100%;
-        height: auto;
-      }
-    }
-  }
   .icon-wrapper {
     text-align: center;
     img {
@@ -131,6 +115,8 @@
 </style>
 
 <script>
+import BackwardButton from "../components/BackwardButton.vue";
+
 const GOOGLE_CLEIENT_ID =
   "911358110649-0nsdem1v571hsh79np1ide8t71mr0ecn.apps.googleusercontent.com";
 const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLEIENT_ID}&
@@ -148,7 +134,6 @@ export default {
       disabled: false,
     };
   },
-
   methods: {
     handleClickOAuthButton() {
       window.location.assign(GOOGLE_AUTH_URL);
@@ -159,5 +144,6 @@ export default {
       this.$router.go(-1);
     },
   },
+  components: { BackwardButton },
 };
 </script>

@@ -1,10 +1,6 @@
 <template lang="">
   <section class="login-form-wrapper">
-    <header>
-      <button @click="moveBackward">
-        <img src="/icon/backward.png" alt="backward" />
-      </button>
-    </header>
+    <BackwardButton @click="moveBackward" message="패스워드 찾기" />
     <section class="icon-wrapper">
       <img src="/icon/w.png" alt="service-logo" />
       <h1>웨이팅캐치</h1>
@@ -61,19 +57,6 @@
 </template>
 <style lang="scss">
 .login-form-wrapper {
-  header {
-    button {
-      width: 50px;
-      height: 50px;
-      border: none;
-      background-color: inherit;
-      img {
-        width: 100%;
-        height: auto;
-      }
-    }
-  }
-
   padding: 30px;
   margin: auto;
   .icon-wrapper {
@@ -120,8 +103,13 @@
 </style>
 
 <script>
+import BackwardButton from "../components/BackwardButton.vue";
+
 export default {
   name: "login",
+  components: {
+    BackwardButton,
+  },
   data() {
     return {
       formState: {
