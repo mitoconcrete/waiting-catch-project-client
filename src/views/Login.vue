@@ -17,6 +17,7 @@
       >
         <a-input
           placeholder="아이디를 입력하세요."
+          size="large"
           v-model:value="formState.username"
         >
           <template #prefix>
@@ -31,6 +32,7 @@
       >
         <a-input-password
           placeholder="패스워드를 입력하세요."
+          size="large"
           v-model:value="formState.password"
         >
           <template #prefix>
