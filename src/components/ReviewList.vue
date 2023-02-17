@@ -24,7 +24,10 @@ import { dateFormatter } from "@/utils/date.js";
 export default {
   name: "ReviewList",
   props: {
-    datas: [],
+    datas: {
+      typeof: Array,
+      default: [],
+    },
   },
   methods: {
     dateFormatter,
