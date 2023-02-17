@@ -3,24 +3,22 @@ import { RouterView } from "vue-router";
 import { mapGetters } from "vuex";
 import BottomNav from "./components/BottomNav.vue";
 import MapModal from "./components/modals/MapModal.vue";
+import CouponModal from "./components/modals/CouponModal.vue";
 import SpinnerScreen from "./components/SpinnerScreen.vue";
 
 export default {
   components: {
     BottomNav,
     MapModal,
+    CouponModal,
     SpinnerScreen,
   },
   computed: {
     ...mapGetters({
       isMapModalActive: "getIsMapModalActive",
+      isCouponModalActive: "getIsCouponModalActive",
       isGlobalLoading: "getIsGlobalLoading",
     }),
-  },
-  watch: {
-    isMapModalActive(val) {
-      console.log(val);
-    },
   },
 };
 </script>
@@ -30,6 +28,7 @@ export default {
     <div class="wrapper">
       <SpinnerScreen v-if="isGlobalLoading" />
       <MapModal v-if="isMapModalActive" />
+      <CouponModal v-if="isCouponModalActive" />
       <section class="screen-wrapper">
         <RouterView />
       </section>

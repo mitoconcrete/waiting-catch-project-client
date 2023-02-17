@@ -4,7 +4,7 @@
       <div></div>
       <strong>{{ stringAddress }}</strong>
     </button>
-    <button></button>
+    <button @click="handleOpenCouponModal"></button>
   </header>
   <section class="home-page page-wrapper">
     <header>
@@ -110,7 +110,7 @@ export default {
   },
   mounted() {
     if (!this.stringAddress) {
-      this.$store.commit("setIsGlobalLoading", true);
+      // this.$store.commit("setIsGlobalLoading", true);
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { latitude, longitude } = coords;
         const geocoder = new window.kakao.maps.services.Geocoder();
@@ -126,7 +126,7 @@ export default {
               } else {
                 this.stringAddress = result[0].address.address_name;
               }
-              this.$store.commit("setIsGlobalLoading", false);
+              // this.$store.commit("setIsGlobalLoading", false);
             }
           }
         );
@@ -141,8 +141,10 @@ export default {
   },
   methods: {
     handleOpenMapModal() {
-      console.log(this.$store);
       this.$store.commit("setIsMapModalStatus", true);
+    },
+    handleOpenCouponModal() {
+      this.$store.commit("setIsCouponModalStatus", true);
     },
   },
 };
