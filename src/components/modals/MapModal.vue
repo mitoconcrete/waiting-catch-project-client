@@ -29,11 +29,15 @@ export default {
   mounted() {
     this.kakao = window.kakao;
     // initial position set
+    this.$store.commit("setIsGlobalLoading", true);
     navigator.geolocation.getCurrentPosition(async ({ coords }) => {
       const { latitude, longitude } = coords;
+
       this.map = await this.drawMap(latitude, longitude);
       await this.setAdressFromPosition(latitude, longitude);
       this.marker = await this.drawMarker(latitude, longitude);
+      this.$store.commit("setIsGlobalLoading", false);
+
       if (this.map && this.marker) {
         this.kakao.maps.event.addListener(this.map, "click", this.clickMarker);
       }

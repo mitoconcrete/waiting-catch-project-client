@@ -3,15 +3,18 @@ import { RouterView } from "vue-router";
 import { mapGetters } from "vuex";
 import BottomNav from "./components/BottomNav.vue";
 import MapModal from "./components/modals/MapModal.vue";
+import SpinnerScreen from "./components/SpinnerScreen.vue";
 
 export default {
   components: {
     BottomNav,
     MapModal,
+    SpinnerScreen,
   },
   computed: {
     ...mapGetters({
       isMapModalActive: "getIsMapModalActive",
+      isGlobalLoading: "getIsGlobalLoading",
     }),
   },
   watch: {
@@ -25,6 +28,7 @@ export default {
 <template>
   <main>
     <div class="wrapper">
+      <SpinnerScreen v-if="isGlobalLoading" />
       <MapModal v-if="isMapModalActive" />
       <section class="screen-wrapper">
         <RouterView />
