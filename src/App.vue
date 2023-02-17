@@ -1,5 +1,6 @@
 <script>
 import { RouterView } from "vue-router";
+import { mapGetters } from "vuex";
 import BottomNav from "./components/BottomNav.vue";
 import MapModal from "./components/modals/MapModal.vue";
 
@@ -8,13 +9,23 @@ export default {
     BottomNav,
     MapModal,
   },
+  computed: {
+    ...mapGetters({
+      isMapModalActive: "getIsMapModalActive",
+    }),
+  },
+  watch: {
+    isMapModalActive(val) {
+      console.log(val);
+    },
+  },
 };
 </script>
 
 <template>
   <main>
     <div class="wrapper">
-      <!-- <MapModal /> -->
+      <MapModal v-if="isMapModalActive" />
       <section class="screen-wrapper">
         <RouterView />
       </section>

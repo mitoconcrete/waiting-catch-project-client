@@ -1,7 +1,7 @@
 <template>
   <section class="modal-wrapper">
     <header>
-      <button>
+      <button @click="moveBackward">
         <img src="/icon/backward.png" alt="backward" />
         <strong>지도에서 위치 확인</strong>
       </button>
@@ -85,6 +85,9 @@ export default {
       this.longitude = latlng.getLng();
 
       this.setAdressFromPosition(latlng.getLat(), latlng.getLng());
+    },
+    moveBackward() {
+      this.$store.commit("setIsMapModalStatus", false);
     },
   },
 };

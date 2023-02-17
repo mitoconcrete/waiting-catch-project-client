@@ -1,6 +1,6 @@
 <template>
   <header class="map-selector">
-    <button>
+    <button @click="handleOpenMapModal">
       <div></div>
       <strong>{{ stringAddress }}</strong>
     </button>
@@ -136,6 +136,12 @@ export default {
       datas: MOCK_DATA,
       stringAddress: "",
     };
+  },
+  methods: {
+    handleOpenMapModal() {
+      console.log(this.$store);
+      this.$store.commit("setIsMapModalStatus", true);
+    },
   },
 };
 </script>
