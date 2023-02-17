@@ -1,8 +1,9 @@
 <template lang="">
   <ul class="review-wrapper">
-    <li v-for="data in datas">
+    <li v-for="data in datas" class="review">
       <h1>{{ data.restaurantName }}</h1>
       <h3>{{ data.content }}</h3>
+      <a-rate :value="data.rate" />
       <div v-if="data.images.length">
         <img v-for="image in data.images" :src="image" alt="리뷰이미지" />
       </div>
@@ -40,12 +41,16 @@ export default {
   flex-direction: column;
   gap: 10px;
 
-  li {
-    background-color: rgb(169, 127, 224, 0.4);
-    border: none;
+  .review {
+    border: 0.5px solid #dadce0;
     border-radius: 10px;
-    padding: 10px;
+    padding: 15px;
     overflow: hidden;
+    box-shadow: 1px 1px 3px 1px #dadce0;
+
+    .ant-rate {
+      line-height: 10px;
+    }
 
     h1,
     h3,
@@ -55,6 +60,17 @@ export default {
 
     p {
       text-align: right;
+      color: rgba($color: #000000, $alpha: 0.5);
+      letter-spacing: -1px;
+      font-size: 10px;
+    }
+
+    h1 {
+      font-size: 25px;
+    }
+
+    h3 {
+      font-size: 15px;
     }
 
     div {
