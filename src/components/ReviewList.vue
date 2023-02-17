@@ -5,30 +5,29 @@
       <h3>{{ data.content }}</h3>
       <a-rate :value="data.rate" />
       <div v-if="data.images.length">
-        <img v-for="image in data.images" :src="image" alt="리뷰이미지" />
+        <a-image v-for="image in data.images" :src="image" alt="리뷰이미지" />
       </div>
-      <p>{{ dateFormatter(data.createdDate) }}</p>
+      <p>
+        {{
+          dateFormatter(
+            data.createdDate,
+            "yyyy년 M월 d일 eee요일, h시 m분 작성"
+          )
+        }}
+      </p>
     </li>
   </ul>
 </template>
 <script>
-import { format } from "date-fns";
+import { dateFormatter } from "@/utils/date.js";
+
 export default {
   name: "ReviewList",
   props: {
     datas: [],
   },
   methods: {
-    dateFormatter(date) {
-      return format(date, "yyyy년 M월 d일 eee요일, h시 m분 작성")
-        .replace("Mon", "월")
-        .replace("Tue", "화")
-        .replace("Wed", "수")
-        .replace("Thu", "목")
-        .replace("Fri", "금")
-        .replace("Sat", "토")
-        .replace("Sun", "일");
-    },
+    dateFormatter,
   },
 };
 </script>
@@ -80,11 +79,16 @@ export default {
       flex-direction: row;
       flex-wrap: wrap;
       gap: 5px;
-      img {
+      .ant-image {
         border-radius: 5px;
         width: calc(25% - 5px);
         height: 100px;
-        object-fit: cover;
+        overflow: hidden;
+        .ant-image-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
       }
     }
   }

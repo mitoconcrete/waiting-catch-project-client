@@ -34,7 +34,7 @@ const router = createRouter({
       component: () => import("@/views/FindPassword.vue"),
     },
     {
-      path: "/reviews",
+      path: "/my/reviews",
       name: "review",
       component: () => import("@/views/MyReviewList.vue"),
     },
@@ -42,6 +42,11 @@ const router = createRouter({
       path: "/info/detail",
       name: "user-detail",
       component: () => import("@/views/InfoManage.vue"),
+    },
+    {
+      path: "/my/lineup",
+      name: "lineup",
+      component: () => import("@/views/MyLineupList.vue"),
     },
   ],
 });

@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     moveBackward() {
-      this.$router.go(-1);
+      this.$router.push("/info");
     },
   },
 };

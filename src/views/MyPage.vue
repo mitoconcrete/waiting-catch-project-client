@@ -101,8 +101,8 @@ for (let i = 1; i <= LINE_UP_COUNT; i++) {
 }
 
 const MENU = [
-  { name: "줄서기 내역", page: "/lineup", imgSrc: "/icon/history.png" },
-  { name: "작성 리뷰 내역", page: "/reviews", imgSrc: "/icon/review.png" },
+  { name: "줄서기 내역", page: "/my/lineup", imgSrc: "/icon/history.png" },
+  { name: "작성 리뷰 내역", page: "/my/reviews", imgSrc: "/icon/review.png" },
 ];
 export default {
   name: "MyPage",

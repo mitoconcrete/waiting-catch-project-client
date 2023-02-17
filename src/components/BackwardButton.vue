@@ -25,7 +25,7 @@ export default {
 <style lang="scss">
 header {
   width: 100%;
-  padding: 10px 5px;
+  padding: 10px 0;
   button {
     display: flex;
     background-color: #fff;
