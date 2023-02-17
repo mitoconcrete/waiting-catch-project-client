@@ -1,4 +1,4 @@
-<template>
+<template lang="">
   <section class="login-form-wrapper">
     <header>
       <button @click="moveBackward">
@@ -32,18 +32,18 @@
       </a-form-item>
 
       <a-form-item
-        name="password"
-        :rules="[{ required: true, message: '패스워드를 입력하세요.' }]"
+        name="email"
+        :rules="[{ required: true, message: '이메일을 입력하세요.' }]"
       >
-        <a-input-password
-          placeholder="패스워드를 입력하세요."
+        <a-input
+          placeholder="이메일을 입력하세요."
           size="large"
-          v-model:value="formState.password"
+          v-model:value="formState.username"
         >
           <template #prefix>
-            <LockOutlined class="site-form-item-icon" />
+            <UserOutlined class="site-form-item-icon" />
           </template>
-        </a-input-password>
+        </a-input>
       </a-form-item>
 
       <a-form-item>
@@ -53,28 +53,14 @@
           html-type="submit"
           class="login-form-button"
         >
-          로그인 하기
+          이메일 전송
         </a-button>
-        <hr />
-        <button
-          class="login-form-button google"
-          @click="handleClickOAuthButton"
-        >
-          <img src="/icon/google.png" />구글로 로그인 하기
-        </button>
       </a-form-item>
     </a-form>
-    <section class="anchor-wrapper">
-      <a href="/signup">아이디가 없으세요?</a> |
-      <a href="/find/password">패스워드를 잊어버리셨다면?</a>
-    </section>
   </section>
 </template>
-
 <style lang="scss">
 .login-form-wrapper {
-  padding: 30px;
-  margin: auto;
   header {
     button {
       width: 50px;
@@ -87,6 +73,9 @@
       }
     }
   }
+
+  padding: 30px;
+  margin: auto;
   .icon-wrapper {
     text-align: center;
     img {
@@ -131,12 +120,6 @@
 </style>
 
 <script>
-const GOOGLE_CLEIENT_ID =
-  "911358110649-0nsdem1v571hsh79np1ide8t71mr0ecn.apps.googleusercontent.com";
-const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLEIENT_ID}&
-response_type=token&
-redirect_uri=http://localhost:5173/oauth/callback&
-scope=https://www.googleapis.com/auth/userinfo.email`;
 export default {
   name: "login",
   data() {
@@ -150,9 +133,6 @@ export default {
   },
 
   methods: {
-    handleClickOAuthButton() {
-      window.location.assign(GOOGLE_AUTH_URL);
-    },
     onFinish() {},
     onFinishFailed() {},
     moveBackward() {

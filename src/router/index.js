@@ -28,6 +28,11 @@ const router = createRouter({
       name: "oauth",
       component: () => import("@/views/OauthCallback.vue"),
     },
+    {
+      path: "/find/password",
+      name: "password",
+      component: () => import("@/views/FindPassword.vue"),
+    },
   ],
 });
 
