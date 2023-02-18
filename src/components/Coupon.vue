@@ -1,13 +1,76 @@
 <template lang="">
-  <div></div>
+  <div
+    class="coupon-wrapper"
+    @click="handleClick"
+    :style="{ cursor: isDownloadable ? 'pointer' : 'auto' }"
+  >
+    <span v-if="isDownloadable"><vertical-align-bottom-outlined /></span>
+    <h1>{{ data.name }}</h1>
+    <p>
+      <strong
+        >{{
+          data.discountPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        }}
+        {{ data.discountType === "PERCENT" ? "%" : "원" }}</strong
+      >
+      할인
+    </p>
+    <p v-if="'expireDate' in data">
+      ~{{ dateFormatter(data.expireDate, "yyyy.M.d") }}
+    </p>
+  </div>
 </template>
 <script>
-//   "id" : 아이디(유저발급쿠폰)
-//   "name" : 이름(생성자)
-//   "isUsed" : 쿠폰 사용여부(유저발급쿠폰)
-//   "discountPrice" : 할인률/가(생성자)
-//   "discountType" : 할인타입(생성자)
-//   "expireDate" : 만료일(생성자)
-export default {};
+import { dateFormatter } from "@/utils/date.js";
+import { VerticalAlignBottomOutlined } from "@ant-design/icons-vue";
+export default {
+  components: {
+    VerticalAlignBottomOutlined,
+  },
+  props: {
+    data: {
+      id: 0,
+      name: "",
+      isUsed: false,
+      discountPrice: 100,
+      discountType: "PERCENT",
+      expireDate: new Date(),
+    },
+    isDownloadable: {
+      typeof: Boolean,
+      default: true,
+    },
+  },
+  methods: {
+    dateFormatter,
+    handleClick() {
+      if (!this.isDownloadable) {
+        return;
+      }
+
+      this.$emit("download", this.data.id);
+    },
+  },
+};
 </script>
-<style lang=""></style>
+<style lang="scss">
+.coupon-wrapper {
+  border: 0.5px solid #dadce0;
+  border-radius: 10px;
+  padding: 15px;
+  overflow: hidden;
+  box-shadow: 1px 1px 3px 1px #dadce0;
+  & > * {
+    margin: 0;
+  }
+
+  p {
+    letter-spacing: -0.3px;
+
+    strong {
+      font-size: 18px;
+    }
+  }
+  text-align: right;
+}
+</style>

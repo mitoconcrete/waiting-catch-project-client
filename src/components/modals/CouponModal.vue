@@ -1,13 +1,13 @@
 <template>
-  <section class="modal-wrapper page-wrapper">
+  <section class="modal-wrapper">
     <BackwordButton @click="moveBackward" message="쿠폰" />
     <a-tabs v-model:activeKey="activeKey">
       <a-tab-pane key="1" tab="현재 보유 쿠폰" style="height: 200px"
-        >Content of Tab Pane 1</a-tab-pane
-      >
-      <a-tab-pane key="2" tab="다운 가능 쿠폰" force-render
-        >Content of Tab Pane 2</a-tab-pane
-      >
+        ><CouponList :datas="mycoupons" :is-downloadable="false"
+      /></a-tab-pane>
+      <a-tab-pane key="2" tab="다운 가능 쿠폰" force-render>
+        <EventList :datas="events" />
+      </a-tab-pane>
     </a-tabs>
   </section>
 </template>
@@ -22,7 +22,7 @@ for (let i = 1; i <= DATA_1_COUNT; i++) {
     id: i,
     name: "쿠폰이름",
     isUsed: i % 2 === 0 ? true : false,
-    discountPrice: 100,
+    discountPrice: 10000,
     discountType: i % 2 === 0 ? "DISCOUNT" : "PERCENT",
     expireDate: new Date(),
   });
@@ -44,16 +44,30 @@ for (let i = 1; i <= DATA_2_COUNT; i++) {
   });
 }
 
+import { dateFormatter } from "@/utils/date.js";
 import BackwordButton from "@/components/BackwardButton.vue";
+import CouponList from "../CouponList.vue";
+import EventList from "../EventList.vue";
+
 export default {
   name: "CouponModal",
   components: {
     BackwordButton,
+    CouponList,
+    EventList,
   },
   data() {
     return {
       activeKey: "1",
+      mycoupons: MOCK_DATA_1,
+      events: MOCK_DATA_2,
     };
+  },
+  methods: {
+    dateFormatter,
+    moveBackward() {
+      this.$store.commit("setIsCouponModalStatus", false);
+    },
   },
 };
 </script>
@@ -69,5 +83,14 @@ export default {
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  padding: 20px;
+  .ant-tabs {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 </style>
