@@ -17,7 +17,10 @@ export default {
   name: "EventList",
   components: { CouponList },
   props: {
-    datas: [],
+    datas: {
+      typeof: Array,
+      default: [],
+    },
   },
   methods: {
     dateFormatter,

@@ -4,7 +4,9 @@
     <main id="kakao-map" ref="kakao-map"></main>
     <footer v-if="stringAddress">
       <strong>{{ stringAddress }}</strong>
-      <a-button type="primary">위치 설정 하기</a-button>
+      <a-button type="primary" @click="handlePositionSave"
+        >위치 설정 하기</a-button
+      >
     </footer>
   </section>
 </template>
@@ -31,7 +33,8 @@ export default {
     this.$store.commit("setIsGlobalLoading", true);
     navigator.geolocation.getCurrentPosition(async ({ coords }) => {
       const { latitude, longitude } = coords;
-
+      this.latitude = latitude;
+      this.longitude = longitude;
       this.map = await this.drawMap(latitude, longitude);
       await this.setAdressFromPosition(latitude, longitude);
       this.marker = await this.drawMarker(latitude, longitude);
@@ -91,6 +94,9 @@ export default {
     },
     moveBackward() {
       this.$store.commit("setIsMapModalStatus", false);
+    },
+    handlePositionSave() {
+      console.log(this.latitude, this.longitude);
     },
   },
 };
