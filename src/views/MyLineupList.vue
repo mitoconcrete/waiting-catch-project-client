@@ -1,6 +1,6 @@
 <template>
   <div class="page-wrapper lineup-wrapper">
-    <a-modal
+    <Modal
       v-model:visible="isModalVisible"
       title="리뷰 생성"
       @cancel="cancelRegister"
@@ -46,7 +46,7 @@
           <a-button type="primary" html-type="submit">제출</a-button>
         </a-form-item>
       </a-form>
-    </a-modal>
+    </Modal>
     <section class="nav-wrapper">
       <BackwardButton @click="moveBackward" message="나의 줄서기 내역" />
     </section>
@@ -86,8 +86,9 @@
 <script>
 import BackwardButton from "../components/BackwardButton.vue";
 import { dateFormatter } from "@/utils/date.js";
-import { Modal } from "ant-design-vue";
+import Modal from "ant-design-vue/lib/modal";
 import { UploadOutlined } from "@ant-design/icons-vue";
+import { getCurrentInstance } from "vue";
 
 const MOCK_DATA = [];
 const DATA_COUNT = 10;
@@ -112,7 +113,7 @@ for (let i = 1; i <= DATA_COUNT; i++) {
 
 export default {
   name: "MyLineupList",
-  components: { BackwardButton, UploadOutlined },
+  components: { BackwardButton, UploadOutlined, Modal },
   methods: {
     dateFormatter,
     moveBackward() {
@@ -125,10 +126,13 @@ export default {
       isReviewed,
       endedAt,
     }) {
+      const appContext = getCurrentInstance();
+      console.log(appContext);
       if (status != "APPROVE") {
         Modal.error({
           title: "리뷰 불가",
           content: "입장완료한 줄서기 내역에만 리뷰를 추가할 수 있습니다.",
+          //   appContext,
         });
         return;
       }
@@ -137,6 +141,7 @@ export default {
         Modal.error({
           title: "리뷰 불가",
           content: "이미 리뷰를 완료한 줄서기 내역입니다.",
+          //   appContext,
         });
         return;
       }
@@ -156,6 +161,7 @@ export default {
         Modal.error({
           title: "필수 사항 체크",
           content: "리뷰는 반드시 작성해야합니다.",
+          //   appContext,
         });
         return;
       }
@@ -168,6 +174,7 @@ export default {
       Modal.error({
         title: "등록 실패",
         content: "리뷰 등록에 실패하였습니다. 새로고침 후 다시 등록해주세요.",
+        // appContext,
       });
     },
     cancelRegister() {
