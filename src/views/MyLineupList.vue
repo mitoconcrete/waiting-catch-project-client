@@ -24,7 +24,12 @@
         >
           <a-textarea v-model:value="formState.content" auto-size />
         </a-form-item>
-
+        <a-form-item
+          label="별점"
+          :rules="[{ required: true, message: '점수를 매겨주세요' }]"
+        >
+          <a-rate v-model:value="formState.rate" />
+        </a-form-item>
         <a-form-item name="upload" label="사진첨부">
           <a-upload
             v-model:fileList="formState.upload"
@@ -38,11 +43,13 @@
           </a-upload>
         </a-form-item>
         <a-form-item style="text-align: right">
-          <a-button type="primary" html-type="submit">Submit</a-button>
+          <a-button type="primary" html-type="submit">제출</a-button>
         </a-form-item>
       </a-form>
     </a-modal>
-    <BackwardButton @click="moveBackward" message="나의 줄서기 내역" />
+    <section class="nav-wrapper">
+      <BackwardButton @click="moveBackward" message="나의 줄서기 내역" />
+    </section>
     <ul class="lineup-list">
       <li v-for="data in datas" class="lineup" @click="handleReviewModal(data)">
         <h1>{{ data.restaurantName }}</h1>
@@ -191,6 +198,7 @@ export default {
       formState: {
         upload: [],
         content: "",
+        rate: 0,
       },
       reviewTarget: {
         id: 0,
@@ -202,6 +210,12 @@ export default {
 };
 </script>
 <style lang="scss">
+.nav-wrapper {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 999;
+}
 .lineup-list {
   display: flex;
   flex-direction: column;

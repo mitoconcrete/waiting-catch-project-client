@@ -110,7 +110,7 @@ export default {
   },
   mounted() {
     if (!this.stringAddress) {
-      // this.$store.commit("setIsGlobalLoading", true);
+      this.$store.commit("setIsGlobalLoading", true);
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { latitude, longitude } = coords;
         const geocoder = new window.kakao.maps.services.Geocoder();
@@ -126,7 +126,7 @@ export default {
               } else {
                 this.stringAddress = result[0].address.address_name;
               }
-              // this.$store.commit("setIsGlobalLoading", false);
+              this.$store.commit("setIsGlobalLoading", false);
             }
           }
         );

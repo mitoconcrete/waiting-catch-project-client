@@ -1,6 +1,8 @@
 <template lang="">
   <div class="page-wrapper">
-    <BackwardButton @click="moveBackward" message="내가 작성한 리뷰조회" />
+    <section class="nav-wrapper">
+      <BackwardButton @click="moveBackward" message="내가 작성한 리뷰조회" />
+    </section>
     <ReviewList :datas="datas" />
   </div>
 </template>
@@ -42,4 +44,11 @@ export default {
   },
 };
 </script>
-<style lang=""></style>
+<style lang="scss">
+.nav-wrapper {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 999;
+}
+</style>
