@@ -36,9 +36,10 @@ for (let i = 1; i <= DATA_2_COUNT; i++) {
     couponCreators: [
       {
         id: i,
+        name: "쿠폰이름",
         discountPrice: 100,
         discountType: i % 2 === 0 ? "DISCOUNT" : "PERCENT",
-        quantity: i,
+        expireDate: new Date(),
       },
     ],
   });

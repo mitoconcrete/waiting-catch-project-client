@@ -5,6 +5,7 @@ import BottomNav from "./components/BottomNav.vue";
 import MapModal from "./components/modals/MapModal.vue";
 import CouponModal from "./components/modals/CouponModal.vue";
 import SpinnerScreen from "./components/SpinnerScreen.vue";
+import RestaurantModal from "./components/modals/RestaurantModal.vue";
 
 export default {
   components: {
@@ -12,11 +13,13 @@ export default {
     MapModal,
     CouponModal,
     SpinnerScreen,
+    RestaurantModal,
   },
   computed: {
     ...mapGetters({
       isMapModalActive: "getIsMapModalActive",
       isCouponModalActive: "getIsCouponModalActive",
+      isRestaurantModalActive: "getIsRestaurantModalActive",
       isGlobalLoading: "getIsGlobalLoading",
     }),
   },
@@ -29,6 +32,7 @@ export default {
       <SpinnerScreen v-if="isGlobalLoading" />
       <MapModal v-if="isMapModalActive" />
       <CouponModal v-if="isCouponModalActive" />
+      <RestaurantModal v-if="isRestaurantModalActive" />
       <section class="screen-wrapper">
         <RouterView />
       </section>

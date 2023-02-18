@@ -4,6 +4,7 @@
       v-for="data in datas"
       :class="`restaurant-list direction-${directionType}`"
       :style="{ flexDireaction: directionType === 'row' ? 'column' : 'row' }"
+      @click="handleClick(data.id)"
     >
       <section
         class="photo-section"
@@ -46,6 +47,12 @@ export default {
     directionType: {
       typeof: "row" || "column",
       default: "column",
+    },
+  },
+  methods: {
+    handleClick(restaurantId) {
+      console.log(restaurantId);
+      this.$store.commit("setIsRestaurantModalStatus", true);
     },
   },
 };

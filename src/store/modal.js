@@ -1,6 +1,7 @@
 const state = {
   isMapModalActive: false,
   isCouponModalActive: false,
+  isRestaurantModalActive: false,
 };
 
 const mutations = {
@@ -10,6 +11,9 @@ const mutations = {
   setIsCouponModalStatus(state, status) {
     state.isCouponModalActive = status;
   },
+  setIsRestaurantModalStatus(state, status) {
+    state.isRestaurantModalActive = status;
+  },
 };
 
 const getters = {
@@ -18,6 +22,9 @@ const getters = {
   },
   getIsCouponModalActive(state) {
     return state.isCouponModalActive;
+  },
+  getIsRestaurantModalActive(state) {
+    return state.isRestaurantModalActive;
   },
 };
 
