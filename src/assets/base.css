@@ -23,3 +23,49 @@ ul {
 li {
   list-style: none;
 }
+.ant-tabs-tab-btn,
+.ant-radio-button-wrapper:hover {
+  color: rgb(140, 96, 200);
+}
+
+.ant-radio-group-solid
+  .ant-radio-button-wrapper-checked:not(
+    .ant-radio-button-wrapper-disabled
+  ):focus-within,
+.ant-radio-button-wrapper:focus-within {
+  box-shadow: 0 0 0 3px rgb(140, 96, 200, 0.1);
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: rgb(140, 96, 200);
+}
+
+.ant-radio-group-solid
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  background: rgb(140, 96, 200);
+  border-color: rgb(140, 96, 200);
+}
+
+.ant-radio-button-wrapper-checked:not(
+    [class*=" ant-radio-button-wrapper-disabled"]
+  ).ant-radio-button-wrapper:first-child {
+  border-right-color: rgb(140, 96, 200);
+}
+
+.ant-radio-button-wrapper-checked:not(
+    .ant-radio-button-wrapper-disabled
+  )::before,
+.ant-radio-button-wrapper-checked:not(
+    .ant-radio-button-wrapper-disabled
+  ):hover::before,
+.ant-tabs-ink-bar {
+  background: rgb(140, 96, 200);
+}
+
+.ant-radio-group-solid
+  .ant-radio-button-wrapper-checked:not(
+    .ant-radio-button-wrapper-disabled
+  ):hover {
+  background: rgb(140, 96, 200, 0.8);
+  border-color: rgb(140, 96, 200, 0.8);
+}

@@ -75,7 +75,7 @@
             v-else-if="!data.isReviewed && data.status === 'APPROVE'"
             class="badge review-badge required"
           >
-            리뷰 필요
+            리뷰 가능
           </p>
           <p class="badge status-badge">{{ status[data.status] }}</p>
         </div>
@@ -255,12 +255,12 @@ export default {
         border: 0.5px solid #dadce0;
         border-radius: 999px;
         background-color: #dadce0;
-        &.review-badge.complete {
+        &.review-badge.required {
           border: 0.5px solid rgb(109, 158, 54);
           background-color: rgb(109, 158, 54);
           color: #fff;
         }
-        &.review-badge.required {
+        &.review-badge.complete {
           border: 0.5px solid rgb(211, 63, 68);
           background-color: rgb(211, 63, 68);
           color: #fff;

@@ -93,5 +93,10 @@ export default {
       display: none;
     }
   }
+  .ant-tabs-nav {
+    position: sticky !important;
+    top: 0;
+    background-color: #fff;
+  }
 }
 </style>

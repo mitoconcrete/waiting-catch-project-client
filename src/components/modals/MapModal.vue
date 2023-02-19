@@ -113,11 +113,10 @@ export default {
   display: flex;
   flex-direction: column;
 
-  main {
-    #kakao-map {
-      width: 100%;
-      height: 100%;
-    }
+  #kakao-map {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    height: 100%;
   }
 
   footer {
