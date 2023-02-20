@@ -1,34 +1,47 @@
 <template>
-  <section>마이페이지</section>
+  <section></section>
 </template>
 
 <style></style>
 
 <script>
-import axios from "axios";
+import { api } from "@/utils/apis.js";
+
 export default {
   name: "oauth-callback",
   async mounted() {
     const url = new URL(window.location.href);
     const hash = url.hash;
     if (hash) {
-      const accessToken = hash.split("=")[1].split("&")[0];
-      await axios
-        .get(
-          "https://www.googleapis.com/oauth2/v2/userinfo?access_token=" +
-            accessToken,
-          {
-            headers: {
-              authorization: `token ${accessToken}`,
-              accept: "application/json",
-            },
+      try {
+        const accessToken = hash.split("=")[1].split("&")[0];
+        const { data } = await api.googleOAuth(accessToken);
+
+        const { email } = data;
+        if (email) {
+          try {
+            const { headers } = await api.googleRedirect({
+              email: email,
+            });
+            if ("authorization" in headers) {
+              const accessToken = await headers.authorization.slice(7);
+              localStorage.setItem("accessToken", accessToken);
+              this.$router.replace("/");
+              return;
+            } else {
+              this.$router.replace("/signup?email=" + email);
+              return;
+            }
+          } catch (e) {
+            this.$router.replace("/signup?email=" + email);
+            return;
           }
-        )
-        .then((data) => {
-          console.log(data);
-          setData(data);
-        })
-        .catch((e) => console.log("oAuth token expired"));
+        }
+      } catch (e) {
+        console.error("Token is Expired");
+        this.$router.push("/login");
+        return;
+      }
     }
   },
 };

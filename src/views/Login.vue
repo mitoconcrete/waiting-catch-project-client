@@ -52,12 +52,13 @@
           로그인 하기
         </a-button>
         <hr />
-        <button
+        <a-button
+          html-type="button"
           class="login-form-button google"
           @click="handleClickOAuthButton"
         >
           <img src="/icon/google.png" />구글로 로그인 하기
-        </button>
+        </a-button>
       </a-form-item>
     </a-form>
     <section class="anchor-wrapper">
@@ -117,11 +118,11 @@
 <script>
 import BackwardButton from "../components/BackwardButton.vue";
 
-const GOOGLE_CLEIENT_ID =
-  "911358110649-0nsdem1v571hsh79np1ide8t71mr0ecn.apps.googleusercontent.com";
-const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLEIENT_ID}&
+const { VITE_GOOGLE_CLIENT_KEY, VITE_GOOGLE_REDIRECT_URL } = import.meta.env;
+
+const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${VITE_GOOGLE_CLIENT_KEY}&
 response_type=token&
-redirect_uri=http://localhost:5173/oauth/callback&
+redirect_uri=${VITE_GOOGLE_REDIRECT_URL}&
 scope=https://www.googleapis.com/auth/userinfo.email`;
 export default {
   name: "login",
