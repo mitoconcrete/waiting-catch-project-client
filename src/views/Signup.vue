@@ -62,13 +62,13 @@
         />
       </a-form-item>
       <a-form-item
-        name="phonenumber"
+        name="phoneNumber"
         :rules="[{ required: true, message: 'Please input your phonenumber!' }]"
       >
         <a-input
           placeholder="전화번호을 입력해주세요."
           size="large"
-          v-model:value="formState.phonenumber"
+          v-model:value="formState.phoneNumber"
         />
       </a-form-item>
       <a-form-item style="text-align: right">
@@ -95,6 +95,7 @@
 
 <script>
 import BackwardButton from "../components/BackwardButton.vue";
+import { api } from "../utils/apis";
 export default {
   components: {
     BackwardButton,
@@ -113,14 +114,36 @@ export default {
         email: "",
         nickname: "",
         name: "",
-        phonenumber: "",
+        phoneNumber: "",
       },
       isEmailFieldDisabled: false,
     };
   },
   methods: {
-    onFinish() {
-      console.log(this.formState);
+    async onFinish() {
+      try {
+        await api.signup(this.formState);
+
+        try {
+          const { headers } = await api.login({
+            username: this.formState.username,
+            password: this.formState.password,
+          });
+          if ("authorization" in headers) {
+            const accessToken = await headers.authorization.slice(7);
+            localStorage.setItem("accessToken", accessToken);
+            this.$router.replace("/");
+            return;
+          } else {
+            this.$router.replace("/login");
+            return;
+          }
+        } catch (e) {
+          throw new Error(e);
+        }
+      } catch (e) {
+        throw new Error(e);
+      }
     },
     onFinishFailed() {},
     moveBackward() {

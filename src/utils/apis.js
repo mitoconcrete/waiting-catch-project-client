@@ -34,6 +34,7 @@ http.interceptors.response.use(
 );
 
 export const api = {
+  // config
   default: {
     setHeadersAuthorization(token) {
       http.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -42,6 +43,7 @@ export const api = {
       delete http.defaults.headers.common["Authorization"];
     },
   },
+  // get
   googleOAuth(accessToken) {
     return axios.get(
       "https://www.googleapis.com/oauth2/v2/userinfo?access_token=" +
@@ -56,5 +58,12 @@ export const api = {
   },
   googleRedirect(params) {
     return http.get("/google/callback", { params });
+  },
+  // post
+  login(payload) {
+    return http.post("/customer/signin", payload);
+  },
+  signup(payload) {
+    return http.post("/customer/signup", payload);
   },
 };
