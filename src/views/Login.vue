@@ -117,6 +117,7 @@
 
 <script>
 import BackwardButton from "../components/BackwardButton.vue";
+import { api } from "../utils/apis";
 
 const { VITE_GOOGLE_CLIENT_KEY, VITE_GOOGLE_REDIRECT_URL } = import.meta.env;
 
@@ -139,7 +140,18 @@ export default {
     handleClickOAuthButton() {
       window.location.assign(GOOGLE_AUTH_URL);
     },
-    onFinish() {},
+    async onFinish() {
+      const { headers } = await api.login(this.formState);
+      if ("authorization" in headers) {
+        const accessToken = await headers.authorization.slice(7);
+        localStorage.setItem("accessToken", accessToken);
+        this.$router.replace("/");
+        return;
+      } else {
+        this.$router.replace("/login");
+        return;
+      }
+    },
     onFinishFailed() {},
     moveBackward() {
       this.$router.go(-1);
