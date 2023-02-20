@@ -48,6 +48,7 @@
           placeholder="이메일을 입력해주세요."
           size="large"
           v-model:value="formState.email"
+          :disabled="isEmailFieldDisabled"
         />
       </a-form-item>
       <a-form-item
@@ -98,6 +99,12 @@ export default {
   components: {
     BackwardButton,
   },
+  created() {
+    if ("email" in this.$route.query && this.$route.query.email.length) {
+      this.formState.email = this.$route.query.email.replaceAll(" ", "");
+      this.isEmailFieldDisabled = true;
+    }
+  },
   data() {
     return {
       formState: {
@@ -108,6 +115,7 @@ export default {
         name: "",
         phonenumber: "",
       },
+      isEmailFieldDisabled: false,
     };
   },
   methods: {
