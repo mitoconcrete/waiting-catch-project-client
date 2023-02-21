@@ -1,14 +1,15 @@
 import axios from "axios";
 import { Modal } from "ant-design-vue";
-import { h } from "vue";
 
 axios.defaults.baseURL = import.meta.env.VITE_SERVER_HOST;
 
 const http = axios.create();
+
 // 응답 인터셉터 추가
 http.interceptors.response.use(
   function (response) {
     // 2xx 범위에 있는 상태 코드는 이 함수를 트리거
+
     // 응답 데이터가 있는 작업 수행
     return response;
   },
@@ -23,8 +24,6 @@ http.interceptors.response.use(
           });
           break;
         case 401:
-          store.commit("/logout");
-          router.push("/login").catch(() => {});
           break;
         default:
           return Promise.reject(error);

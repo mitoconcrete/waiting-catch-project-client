@@ -1,7 +1,8 @@
 import Vuex from "vuex";
-import Modal from "./modal";
+import Modal from "./models/modal";
+import User from "./models/user";
 export default new Vuex.Store({
-  modules: { Modal },
+  modules: { Modal, User },
   state: {
     isGlobalLoading: false,
   },

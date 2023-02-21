@@ -1,10 +1,8 @@
 <template>
   <section class="page-wrapper profile-page">
     <header>
-      <button @click="userProfile.nickname ? goProfilePage() : goLoginPage()">
-        <strong>{{
-          userProfile.nickname ? `${userProfile.nickname} 님` : "-"
-        }}</strong>
+      <button @click="nickname ? goProfilePage() : goLoginPage()">
+        <strong>{{ nickname ? `${nickname} 님` : "-" }}</strong>
         <img class="present-icon" src="/icon/r_forward.png" />
       </button>
     </header>
@@ -74,31 +72,32 @@
 </style>
 
 <script>
-const REVIEW_COUNT = 10;
-const LINE_UP_COUNT = 10;
-const REVIEW_MOCK_DATA = [];
-const LINE_UP_MOCK_DATA = [];
+import { mapGetters } from "vuex";
+// const REVIEW_COUNT = 10;
+// const LINE_UP_COUNT = 10;
+// const REVIEW_MOCK_DATA = [];
+// const LINE_UP_MOCK_DATA = [];
 
-for (let i = 1; i <= REVIEW_COUNT; i++) {
-  REVIEW_MOCK_DATA.push({
-    id: i,
-    restaurantName: "리뷰가게이름",
-    content: "리뷰내용",
-    rate: 5,
-    createdDate: new Date(),
-  });
-}
+// for (let i = 1; i <= REVIEW_COUNT; i++) {
+//   REVIEW_MOCK_DATA.push({
+//     id: i,
+//     restaurantName: "리뷰가게이름",
+//     content: "리뷰내용",
+//     rate: 5,
+//     createdDate: new Date(),
+//   });
+// }
 
-for (let i = 1; i <= LINE_UP_COUNT; i++) {
-  LINE_UP_MOCK_DATA.push({
-    restaurantName: "줄선 가게 이름",
-    nickName: "내 닉네임",
-    waitingMemberCount: 3,
-    status: "WAIT",
-    createdDate: new Date(),
-    arrivedAt: new Date(),
-  });
-}
+// for (let i = 1; i <= LINE_UP_COUNT; i++) {
+//   LINE_UP_MOCK_DATA.push({
+//     restaurantName: "줄선 가게 이름",
+//     nickName: "내 닉네임",
+//     waitingMemberCount: 3,
+//     status: "WAIT",
+//     createdDate: new Date(),
+//     arrivedAt: new Date(),
+//   });
+// }
 
 const MENU = [
   { name: "줄서기 내역", page: "/my/lineup", imgSrc: "/icon/history.png" },
@@ -108,12 +107,9 @@ export default {
   name: "MyPage",
   data() {
     return {
-      linupList: LINE_UP_MOCK_DATA,
-      reviewList: REVIEW_MOCK_DATA,
+      // linupList: LINE_UP_MOCK_DATA,
+      // reviewList: REVIEW_MOCK_DATA,
       menus: MENU,
-      userProfile: {
-        nickname: "Mitoconcrete",
-      },
     };
   },
   methods: {
@@ -126,6 +122,14 @@ export default {
     goNextPage(page) {
       this.$router.push(page);
     },
+  },
+  computed: {
+    ...mapGetters({
+      nickname: "getUserNickname",
+    }),
+  },
+  created() {
+    this.$store.dispatch("syncUserProfile");
   },
 };
 </script>
