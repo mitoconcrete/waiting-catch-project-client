@@ -26,6 +26,9 @@ const getters = {
     console.log("!", state);
     return state.user.nickname;
   },
+  getUserProfile(state) {
+    return state.user;
+  },
 };
 
 const actions = {

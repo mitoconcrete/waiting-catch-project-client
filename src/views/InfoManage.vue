@@ -61,7 +61,7 @@
         <a-input
           placeholder="전화번호을 입력해주세요."
           size="large"
-          v-model:value="formState.phonenumber"
+          v-model:value="formState.phoneNumber"
           disabled
         />
       </a-form-item>
@@ -98,6 +98,7 @@
 
 <script>
 import BackwardButton from "../components/BackwardButton.vue";
+import { mapGetters } from "vuex";
 import { Modal } from "ant-design-vue";
 export default {
   components: {
@@ -110,8 +111,19 @@ export default {
         email: "이메일",
         nickname: "닉네임",
         name: "이름",
-        phonenumber: "전화번호",
+        phoneNumber: "전화번호",
       },
+    };
+  },
+  computed: {
+    ...mapGetters({
+      userProfile: "getUserProfile",
+    }),
+  },
+  async created() {
+    await this.$store.dispatch("syncUserProfile");
+    this.formState = {
+      ...this.userProfile,
     };
   },
   methods: {
