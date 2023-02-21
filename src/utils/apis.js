@@ -69,6 +69,18 @@ export const api = {
   getRestaurantSearch(params) {
     return http.get("/restaurants/search", { params });
   },
+  getCustomerReviews() {
+    return http.get("/customer/reviews");
+  },
+  getWaitingHistories() {
+    return http.get("/customer/lineup-records");
+  },
+  getCustomerDetailInfo() {
+    return http.get("/customer/info");
+  },
+  getCustomerCoupons() {
+    return http.get("/customer/coupons");
+  },
   googleOAuth(accessToken) {
     return axios.get(
       "https://www.googleapis.com/oauth2/v2/userinfo?access_token=" +
@@ -90,6 +102,9 @@ export const api = {
   },
   postWaiting(restaurantId) {
     return http.post(`/restaurants/${restaurantId}/lineup`);
+  },
+  postCoupon(creatorId) {
+    return http.post(`/api/counpon/creators/${creatorId}`);
   },
   login(payload) {
     return http.post("/customer/signin", payload);
