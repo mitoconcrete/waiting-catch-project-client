@@ -125,6 +125,7 @@ const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=
 response_type=token&
 redirect_uri=${VITE_GOOGLE_REDIRECT_URL}&
 scope=https://www.googleapis.com/auth/userinfo.email`;
+
 export default {
   name: "login",
   data() {

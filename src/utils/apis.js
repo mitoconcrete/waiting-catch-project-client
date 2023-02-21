@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Modal } from "ant-design-vue";
+import { h } from "vue";
 
 axios.defaults.baseURL = import.meta.env.VITE_SERVER_HOST;
 
@@ -44,6 +45,30 @@ export const api = {
     },
   },
   // get
+  getRestaurants(params) {
+    return http.get("/restaurants", { params });
+  },
+  getRestaurantBasicInfo(restaurantId) {
+    return http.get(`/restaurants/${restaurantId}`);
+  },
+  getRestaurantDetailInfo(restaurantId) {
+    return http.get(`/restaurants/${restaurantId}/details`);
+  },
+  getRestaurantMenus(restaurantId) {
+    return http.get(`/restaurants/${restaurantId}/menus`);
+  },
+  getRestaurantReviews(restaurantId) {
+    return http.get(`/restaurants/${restaurantId}/reviews`);
+  },
+  getRetaurantEvents(restaurantId) {
+    return http.get(`/restaurants/${restaurantId}/events`);
+  },
+  getGlobalEvents() {
+    return http.get("/events");
+  },
+  getRestaurantSearch(params) {
+    return http.get("/restaurants/search", { params });
+  },
   googleOAuth(accessToken) {
     return axios.get(
       "https://www.googleapis.com/oauth2/v2/userinfo?access_token=" +
@@ -60,10 +85,35 @@ export const api = {
     return http.get("/google/callback", { params });
   },
   // post
+  postReview(restaurantId) {
+    return http.post(`/restaurants/${restaurantId}/reviews`);
+  },
+  postWaiting(restaurantId) {
+    return http.post(`/restaurants/${restaurantId}/lineup`);
+  },
   login(payload) {
     return http.post("/customer/signin", payload);
   },
   signup(payload) {
     return http.post("/customer/signup", payload);
+  },
+  logout() {
+    return http.post("/customer/signout");
+  },
+  findPassword(payload) {
+    return http.post("/customer/find-password", payload);
+  },
+  // delete
+  deleteReview(restaurantId, reviewId) {
+    return http.delete(
+      `/restaurants/${restaurantId}/reviews/${reviewId}`,
+      payload
+    );
+  },
+  deleteWaiting() {
+    return http.delete(`/restaurants/${restaurantId}/lineup`);
+  },
+  deleteCustomer() {
+    return http.delete(`/customer/withdraw`);
   },
 };
