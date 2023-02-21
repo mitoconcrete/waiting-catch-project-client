@@ -138,8 +138,9 @@ export default {
       Modal.confirm({
         title: "회원 탈퇴",
         content: "정말로 탈퇴하시겠습니까?",
-        onOk: () => {
-          console.log("ok");
+        onOk: async () => {
+          await this.$store.dispatch("withdraw");
+          this.$router.replace("/login");
         },
       });
     },
@@ -147,8 +148,9 @@ export default {
       Modal.confirm({
         title: "로그아웃",
         content: "로그아웃 하시겠습니까?",
-        onOk: () => {
-          console.log("ok2");
+        onOk: async () => {
+          await this.$store.dispatch("logout");
+          this.$router.replace("/login");
         },
       });
     },

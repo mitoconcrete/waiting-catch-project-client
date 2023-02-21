@@ -42,6 +42,50 @@ const actions = {
     console.log(data);
     commit("setUserProfile", data);
   },
+
+  async logout({ commit }) {
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      return;
+    }
+    api.default.setHeadersAuthorization(token);
+    await api.logout();
+    commit("setUserProfile", {
+      banned: false,
+      createdDate: "",
+      deleted: false,
+      email: "",
+      id: 0,
+      modifiedDate: "",
+      name: "",
+      nickname: "",
+      role: "",
+      username: "",
+    });
+    window.localStorage.removeItem("accessToken");
+  },
+
+  async withdraw({ commit }) {
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      return;
+    }
+    api.default.setHeadersAuthorization(token);
+    await api.deleteCustomer();
+    commit("setUserProfile", {
+      banned: false,
+      createdDate: "",
+      deleted: false,
+      email: "",
+      id: 0,
+      modifiedDate: "",
+      name: "",
+      nickname: "",
+      role: "",
+      username: "",
+    });
+    window.localStorage.removeItem("accessToken");
+  },
 };
 
 export default {
