@@ -81,6 +81,7 @@ export default {
     background-size: cover;
     border-radius: 10px;
     overflow: hidden;
+    background-color: #dadce0;
 
     .status-badge {
       position: absolute;

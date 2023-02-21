@@ -121,16 +121,17 @@ export default {
   },
   async mounted() {
     await this.$store.commit("setIsGlobalLoading", true);
-    if (!this.position.stringAddress) {
-      if (this.position.latitude == -1 && this.position.longitude == -1) {
-        navigator.geolocation.getCurrentPosition(({ coords }) => {
-          const { latitude, longitude } = coords;
-          this.$store.dispatch("syncUserPosition", {
-            latitude: latitude,
-            longitude: longitude,
-          });
+    if (this.position.latitude == -1 && this.position.longitude == -1) {
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        const { latitude, longitude } = coords;
+        this.$store.dispatch("syncUserPosition", {
+          latitude: latitude,
+          longitude: longitude,
         });
-      }
+      });
+    } else {
+      this.getRestaurants(this.position.latitude, this.position.longitude);
+      this.getStringAddress(this.position.latitude, this.position.longitude);
     }
   },
   watch: {

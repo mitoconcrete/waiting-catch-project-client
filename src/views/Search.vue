@@ -58,12 +58,13 @@ for (let i = 1; i <= DATA_COUNT; i++) {
   MOCK_DATA.push({
     id: i,
     name: "가게이름",
-    imagePath:
+    imageUrl:
       "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
     rate: 5,
-    category: "한식",
+    category: ["한식"],
     distance: 3.5,
-    waitingCount: i - 1,
+    currentWaitingNumber: i - 1,
+    lineupActive: true,
   });
 }
 export default {
