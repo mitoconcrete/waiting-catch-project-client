@@ -34,7 +34,7 @@
         <a-input
           placeholder="이메일을 입력하세요."
           size="large"
-          v-model:value="formState.username"
+          v-model:value="formState.email"
         >
           <template #prefix>
             <UserOutlined class="site-form-item-icon" />
@@ -104,6 +104,8 @@
 
 <script>
 import BackwardButton from "../components/BackwardButton.vue";
+import { Modal } from "ant-design-vue";
+import { api } from "@/utils/apis";
 
 export default {
   name: "login",
@@ -114,14 +116,21 @@ export default {
     return {
       formState: {
         username: "",
-        password: "",
+        email: "",
       },
       disabled: false,
     };
   },
 
   methods: {
-    onFinish() {},
+    async onFinish() {
+      await api.findPassword(this.formState);
+      Modal.success({
+        title: "이메일 발송",
+        content: "기입하신 이메일로 임시패스워드를 발급하였습니다.",
+      });
+      this.$router.replace("/login");
+    },
     onFinishFailed() {},
     moveBackward() {
       this.$router.go(-1);
