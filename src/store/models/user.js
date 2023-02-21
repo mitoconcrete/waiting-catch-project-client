@@ -13,21 +13,37 @@ const state = {
     role: "",
     username: "",
   },
+  position: {
+    latitude: -1,
+    longitude: -1,
+    stringAddress: "",
+  },
 };
 
 const mutations = {
   setUserProfile(state, status) {
     state.user = status;
   },
+  setUserPosition(state, status) {
+    state.position = {
+      ...status,
+      ...state.stringAddress,
+    };
+  },
+  setStringAddress(state, status) {
+    state.position.stringAddress = status;
+  },
 };
 
 const getters = {
   getUserNickname(state) {
-    console.log("!", state);
     return state.user.nickname;
   },
   getUserProfile(state) {
     return state.user;
+  },
+  getUserPosition(state) {
+    return state.position;
   },
 };
 
@@ -41,6 +57,10 @@ const actions = {
     const { data } = await api.getCustomerDetailInfo();
     console.log(data);
     commit("setUserProfile", data);
+  },
+
+  syncUserPosition({ commit }, status) {
+    commit("setUserPosition", status);
   },
 
   async logout({ commit }) {

@@ -12,6 +12,7 @@
 </template>
 <script>
 import BackwordButton from "@/components/BackwardButton.vue";
+import { Modal } from "ant-design-vue";
 export default {
   name: "BackwardButton",
   components: {
@@ -96,7 +97,14 @@ export default {
       this.$store.commit("setIsMapModalStatus", false);
     },
     handlePositionSave() {
-      console.log(this.latitude, this.longitude);
+      this.$store.dispatch("syncUserPosition", {
+        latitude: this.latitude,
+        longitude: this.longitude,
+      });
+      Modal.success({
+        title: "위치설정완료",
+        content: "위치가 설정되었습니다.",
+      });
     },
   },
 };

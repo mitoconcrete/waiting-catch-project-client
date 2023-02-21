@@ -9,29 +9,31 @@
       <section
         class="photo-section"
         :style="{
-          backgroundImage: `url(${data.imagePath})`,
+          backgroundImage: `url(${data.imageUrl})`,
         }"
       >
         <span
           :class="
             'status-badge ' +
-            (data.waitingCount > 5 ? 'hard-wait' : 'normal-wait')
+            (data.currentWaitingNumber > 5 ? 'hard-wait' : 'normal-wait')
           "
-          v-if="data.waitingCount"
-          >대기 {{ data.waitingCount }}팀</span
+          v-if="data.currentWaitingNumber"
+          >대기 {{ data.currentWaitingNumber }}팀</span
         >
         <span class="status-badge no-wait" v-else>대기 없음</span>
       </section>
       <section class="description-section" v-if="directionType === 'row'">
-        <span class="sub-info">{{ data.category }}</span>
+        <span class="sub-info">{{ data.category[0] }}</span>
         <h3>{{ data.name }}</h3>
         <a-rate :value="data.rate" />
-        <span class="sub-info">{{ data.distance }}km</span>
+        <span class="sub-info">{{ data.distance.toFixed(2) }}km</span>
       </section>
       <section class="description-section" v-else>
         <h3>{{ data.name }}</h3>
         <a-rate :value="data.rate" />
-        <span class="sub-info">{{ data.category }} {{ data.distance }}km</span>
+        <span class="sub-info"
+          >{{ data.category[0] }} {{ data.distance.toFixed(2) }}km</span
+        >
       </section>
     </li>
   </ul>
@@ -138,6 +140,7 @@ export default {
     .photo-section {
       width: calc(100% / 2);
       height: 150px;
+      background-color: #dadce0;
     }
     .description-section {
       margin: auto 0;
