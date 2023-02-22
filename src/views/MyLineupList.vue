@@ -99,6 +99,7 @@ import { dateFormatter } from "@/utils/date.js";
 import Modal from "ant-design-vue/lib/modal";
 import { UploadOutlined } from "@ant-design/icons-vue";
 import { mapGetters } from "vuex";
+import { api } from "../utils/apis";
 
 const MOCK_DATA = [];
 const DATA_COUNT = 0;
@@ -131,10 +132,12 @@ export default {
     },
     handleReviewModal({
       restaurantId: id,
-      restaurantName,
+      restaurantName: name,
       status,
       reviewed,
       arrivedAt,
+      type,
+      lineupId,
     }) {
       if (status != "ARRIVE") {
         Modal.error({
@@ -153,16 +156,18 @@ export default {
         return;
       }
       this.reviewTarget = {
-        id: id,
-        name: restaurantName,
+        id,
+        name,
         arrivedAt: this.dateFormatter(
           new Date(arrivedAt),
           "yyyy년 MM월 dd일 eee요일, h시 m분"
         ),
+        lineupId,
+        type,
       };
       this.isModalVisible = true;
     },
-    onFinish() {
+    async onFinish() {
       console.log(this.formState);
       if (!this.formState.content) {
         Modal.error({
@@ -172,9 +177,45 @@ export default {
         return;
       }
       const imageList = this.formState.upload.map((cur) => cur.originFileObj);
-      console.log(imageList);
-      this.resetValue();
-      this.isModalVisible = false;
+      const payload = {
+        type: this.reviewTarget.type,
+        lineupId: this.reviewTarget.lineupId,
+        rate: this.formState.rate,
+        content: this.formState.content,
+        images: imageList,
+      };
+
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        return this.$router.replace("/login");
+      }
+      api.default.setHeadersAuthorization(token);
+      const form = new FormData();
+      if (payload.images.length) {
+        for (let image of payload.images) {
+          form.append("images", image);
+        }
+      }
+      delete payload.images;
+      const json = new Blob([JSON.stringify(payload)], {
+        type: "application/json",
+      });
+      form.append("controllerRequest", json);
+      try {
+        await api.postReview(this.reviewTarget.id, form);
+        Modal.success({
+          title: "업데이트 성공",
+          content: "리뷰를 성공적으로 업데이트 했습니다.",
+        });
+        this.resetValue();
+        this.syncData();
+        this.isModalVisible = false;
+      } catch (e) {
+        Modal.error({
+          title: "업데이트 실패",
+          content: "리뷰 업데이트에 실패했습니다. 다시시도해주세요.",
+        });
+      }
     },
     onFinishFailed() {
       Modal.error({
@@ -195,7 +236,13 @@ export default {
         id: 0,
         name: "",
         arrivedAt: "",
+        lineupId: 0,
+        type: "",
       };
+    },
+    async syncData() {
+      await this.$store.dispatch("syncUserWaitings");
+      this.datas = this.userWaitings;
     },
   },
   computed: {
@@ -204,8 +251,7 @@ export default {
     }),
   },
   async created() {
-    await this.$store.dispatch("syncUserWaitings");
-    this.datas = this.userWaitings;
+    this.syncData();
   },
   data() {
     return {

@@ -96,8 +96,12 @@ export const api = {
     return http.get("/google/callback", { params });
   },
   // post
-  postReview(restaurantId) {
-    return http.post(`/restaurants/${restaurantId}/reviews`);
+  postReview(restaurantId, payload) {
+    return http.post(`/restaurants/${restaurantId}/reviews`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   postWaiting(restaurantId) {
     return http.post(`/restaurants/${restaurantId}/lineup`);
