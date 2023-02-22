@@ -130,13 +130,6 @@ const actions = {
     commit("setUserReviews", data.data);
   },
   async syncUserWaitings({ commit }, payload) {
-    const token = window.localStorage.getItem("accessToken");
-    if (!token) {
-      return (window.location.href = "/login");
-    }
-    api.default.setHeadersAuthorization(token);
-
-    console.log(payload);
     const { data } = payload
       ? await api.getWaitingHistories(payload)
       : await api.getWaitingHistories();

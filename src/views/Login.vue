@@ -142,6 +142,7 @@ export default {
       window.location.assign(GOOGLE_AUTH_URL);
     },
     async onFinish() {
+      api.default.deleteHeadersAuthorization();
       const { headers } = await api.login(this.formState);
       if ("authorization" in headers) {
         const accessToken = await headers.authorization.slice(7);

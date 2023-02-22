@@ -39,7 +39,7 @@
   </ul>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { Modal } from "ant-design-vue";
 
 export default {
   name: "RestaurantList",
@@ -57,7 +57,10 @@ export default {
     async handleClick(restaurantId) {
       const token = window.localStorage.getItem("accessToken");
       if (!token) {
-        this.$router.replace("/login");
+        Modal.warn({
+          title: "로그인 요청",
+          content: "로그인 이후 이용가능합니다.",
+        });
         return;
       }
       console.log(restaurantId);

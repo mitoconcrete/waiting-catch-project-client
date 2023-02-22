@@ -50,6 +50,7 @@ import BackwordButton from "@/components/BackwardButton.vue";
 import CouponList from "../CouponList.vue";
 import EventList from "../EventList.vue";
 import { mapGetters } from "vuex";
+import { Modal } from "ant-design-vue";
 
 export default {
   name: "CouponModal",
@@ -57,6 +58,17 @@ export default {
     BackwordButton,
     CouponList,
     EventList,
+  },
+  created() {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      Modal.warn({
+        title: "로그인 요청",
+        content: "로그인 이후 이용가능합니다.",
+      });
+      this.$store.commit("setIsCouponModalStatus", false);
+      return;
+    }
   },
   data() {
     return {

@@ -40,7 +40,9 @@ export const api = {
       http.defaults.headers.common["Authorization"] = "Bearer " + token;
     },
     deleteHeadersAuthorization() {
-      delete http.defaults.headers.common["Authorization"];
+      if ("Authorization" in http.defaults.headers.common) {
+        delete http.defaults.headers.common["Authorization"];
+      }
     },
   },
   // get
@@ -120,6 +122,10 @@ export const api = {
   },
   findPassword(payload) {
     return http.post("/customer/find-password", payload);
+  },
+  // put
+  updatePassword(payload) {
+    return http.put("/customer/password", payload);
   },
   // delete
   deleteReview(restaurantId, reviewId) {

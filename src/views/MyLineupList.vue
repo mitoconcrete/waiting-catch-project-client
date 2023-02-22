@@ -241,6 +241,16 @@ export default {
       };
     },
     async syncData() {
+      const token = window.localStorage.getItem("accessToken");
+      if (!token) {
+        Modal.warn({
+          title: "로그인 요청",
+          content: "로그인 이후 이용가능합니다.",
+        });
+        this.$router.replace("/info");
+        return;
+      }
+      api.default.setHeadersAuthorization(token);
       await this.$store.dispatch("syncUserWaitings");
       this.datas = this.userWaitings.sort((a, b) => b.lineupId - a.lineupId);
     },

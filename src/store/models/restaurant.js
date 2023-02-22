@@ -58,6 +58,7 @@ const actions = {
     //   return;
     // }
     // api.default.setHeadersAuthorization(token);
+    api.default.deleteHeadersAuthorization();
     const { data } = await api.getRestaurants(params);
     commit("setRestaurants", data);
   },

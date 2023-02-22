@@ -10,6 +10,7 @@
 import { mapGetters } from "vuex";
 import BackwardButton from "../components/BackwardButton.vue";
 import ReviewList from "../components/ReviewList.vue";
+import { Modal } from "ant-design-vue";
 
 const MOCK_DATA = [];
 const DATA_COUNT = 10;
@@ -44,6 +45,15 @@ export default {
     }),
   },
   async created() {
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      Modal.warn({
+        title: "로그인 요청",
+        content: "로그인 이후 이용가능합니다.",
+      });
+      this.$router.replace("/info");
+      return;
+    }
     await this.$store.dispatch("syncUserReviews");
     this.datas = this.userReviews;
   },

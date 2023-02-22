@@ -129,6 +129,10 @@ export default {
     }),
   },
   created() {
+    const token = localStorage.getItem("acceeToken");
+    if (!token) {
+      return;
+    }
     this.$store.dispatch("syncUserProfile");
   },
 };
