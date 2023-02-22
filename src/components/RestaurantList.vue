@@ -60,7 +60,7 @@ export default {
         this.$router.replace("/login");
         return;
       }
-
+      console.log(restaurantId);
       await this.$store.dispatch("syncRestaurantBasicInfo", restaurantId);
       await this.$store.dispatch("syncRestaurantDetailInfo", restaurantId);
       this.$store.commit("setIsRestaurantModalStatus", true);

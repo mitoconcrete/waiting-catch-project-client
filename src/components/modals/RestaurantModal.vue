@@ -1,4 +1,21 @@
 <template>
+  <a-modal
+    v-model:visible="memberModalVisible"
+    title="입장 인원 입력"
+    @ok="handleMemberCount"
+  >
+    <a-input
+      type="number"
+      min="1"
+      max="10"
+      :value="enterCount"
+      @change="
+        (e) => {
+          this.enterCount = e.target.value;
+        }
+      "
+    ></a-input>
+  </a-modal>
   <div class="modal-wrapper">
     <BackwardButton @click="moveBackward" message="가게 정보" />
     <section class="restaurant-info-wrapper">
@@ -43,7 +60,12 @@
     </section>
   </div>
   <section class="line-up-btn-wrapper">
-    <a-button class="line-up-btn" @click="handleLineup"> 줄서기 </a-button>
+    <a-button v-if="activeStatus" class="line-up-btn" @click="handleLineup">
+      줄서기
+    </a-button>
+    <a-button v-else class="line-up-btn" @click="handleCancelLineup">
+      줄서기취소
+    </a-button>
   </section>
 </template>
 <script>
@@ -57,6 +79,8 @@ import ReviewList from "../ReviewList.vue";
 import EventList from "../EventList.vue";
 import MenuList from "../MenuList.vue";
 import { mapGetters } from "vuex";
+import { api } from "../../utils/apis";
+import { Modal } from "ant-design-vue";
 const MOCK_RESATURANT_BASIC = {
   name: "가게이름",
   imagePaths: [
@@ -131,6 +155,10 @@ export default {
       menus: MOCK_MENU,
       activeKey: "1",
       reviews: MOCK_REVIEW,
+      activeStatus: false,
+      lineupId: 0,
+      enterCount: 0,
+      memberModalVisible: false,
     };
   },
   computed: {
@@ -140,6 +168,8 @@ export default {
       menuData: "getRestaurantMenus",
       reviewData: "getRestaurantReviews",
       eventData: "getResaturantEvents",
+      userPosition: "getUserPosition",
+      userWaitings: "getUserWaitings",
     }),
   },
   watch: {
@@ -177,6 +207,9 @@ export default {
     EventList,
     MenuList,
   },
+  created() {
+    this.isCurrentRestaurantWaiting();
+  },
   methods: {
     moveBackward() {
       this.$store.commit("setIsRestaurantModalStatus", false);
@@ -184,8 +217,87 @@ export default {
     onTabChange(val) {
       console.log(val);
     },
-    handleLineup() {
-      console.log("줄서기 신청");
+    async handleLineup() {
+      this.memberModalVisible = true;
+    },
+    async handleCancelLineup() {
+      Modal.confirm({
+        title: "줄서기 취소",
+        content: "정말 취소하시겠습니까?",
+        okText: "네",
+        cancelText: "아니오",
+        onOk: () => {
+          this.onCancel();
+        },
+      });
+    },
+    async requestWaiting() {
+      try {
+        const token = localStorage.getItem("accessToken");
+        api.default.setHeadersAuthorization(token);
+        const payload = {
+          latitude: this.userPosition.latitude,
+          longitude: this.userPosition.longitude,
+          numOfMember: this.enterCount,
+        };
+        await api.postWaiting(this.restaurantDetail.id, payload);
+        Modal.success({
+          title: "줄서기 성공",
+          content:
+            "줄서기 신청이 완료되었습니다. 순서가 준비되면 문자로 알려드립니다.",
+        });
+        this.isCurrentRestaurantWaiting();
+      } catch (e) {
+        throw new Error(e);
+      }
+    },
+    handleMemberCount() {
+      if (this.enterCount <= 0 || this.enterCount > 10) {
+        Modal.warn({
+          title: "입장 인원은 1명이상 10명 이하를 입력해주세요.",
+        });
+        this.enterCount = 0;
+        return;
+      }
+      this.requestWaiting();
+      this.memberModalVisible = false;
+    },
+    async onCancel() {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          return this.$router.replace("/login");
+        }
+        api.default.setHeadersAuthorization(token);
+        if (!this.lineupId) {
+          Modal.error({
+            title: "오류",
+            content: "취소오류가 발생했습니다. 새로고침을 눌러주세요.",
+          });
+          return;
+        }
+        await api.deleteWaiting(this.lineupId);
+        Modal.success({
+          title: "취소 성공",
+          content: "줄서기 취소에 성공했습니다.",
+        });
+        this.isCurrentRestaurantWaiting();
+      } catch (e) {
+        throw new Error(e);
+      }
+    },
+    async isCurrentRestaurantWaiting() {
+      await this.$store.dispatch("syncUserWaitings", {
+        arrivalStatus: "WAIT",
+      });
+      this.activeStatus = true;
+      this.userWaitings.forEach((el) => {
+        if (el.restaurantId === this.restaurantDetail.id) {
+          this.lineupId = el.lineupId;
+          this.activeStatus = false;
+          return;
+        }
+      });
     },
   },
 };
@@ -196,6 +308,9 @@ export default {
   width: calc(100% + 40px);
   margin-left: -20px;
   margin-top: 10px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .image-wrapper {
     width: 100%;
     height: 320px;
@@ -257,7 +372,7 @@ export default {
 .line-up-btn-wrapper {
   position: sticky;
   bottom: 0;
-  z-index: 9999;
+  z-index: 1000;
   background: #fff;
   padding: 20px;
   .line-up-btn {

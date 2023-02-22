@@ -71,8 +71,8 @@ export const api = {
   getCustomerReviews() {
     return http.get("/customer/reviews");
   },
-  getWaitingHistories() {
-    return http.get("/customer/lineup-records");
+  getWaitingHistories(params) {
+    return http.get("/customer/lineup-records", { params });
   },
   getCustomerDetailInfo() {
     return http.get("/customer/info");
@@ -103,8 +103,8 @@ export const api = {
       },
     });
   },
-  postWaiting(restaurantId) {
-    return http.post(`/restaurants/${restaurantId}/lineup`);
+  postWaiting(restaurantId, payload) {
+    return http.post(`/restaurants/${restaurantId}/lineup`, payload);
   },
   postCoupon(creatorId) {
     return http.post(`/coupons/creators/${creatorId}`);
@@ -128,8 +128,8 @@ export const api = {
       payload
     );
   },
-  deleteWaiting() {
-    return http.delete(`/restaurants/${restaurantId}/lineup`);
+  deleteWaiting(lineupId) {
+    return http.delete(`/restaurants/lineup/${lineupId}`);
   },
   deleteCustomer() {
     return http.delete(`/customer/withdraw`);

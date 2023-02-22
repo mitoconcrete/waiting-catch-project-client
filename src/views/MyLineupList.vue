@@ -242,7 +242,7 @@ export default {
     },
     async syncData() {
       await this.$store.dispatch("syncUserWaitings");
-      this.datas = this.userWaitings;
+      this.datas = this.userWaitings.sort((a, b) => b.lineupId - a.lineupId);
     },
   },
   computed: {

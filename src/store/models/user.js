@@ -136,6 +136,7 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
 
+    console.log(payload);
     const { data } = payload
       ? await api.getWaitingHistories(payload)
       : await api.getWaitingHistories();
