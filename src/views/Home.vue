@@ -10,7 +10,11 @@
     <header>
       <h1>어디를 가볼까?</h1>
       <section class="filter-section">
-        <a-select placeholder="정렬 순서" style="width: 200px">
+        <a-select
+          placeholder="정렬 순서"
+          style="width: 200px"
+          @change="onSortBySelect"
+        >
           <a-select-option value="distance">가까운 순</a-select-option>
           <a-select-option value="rate">평점 높은 순</a-select-option>
           <!-- <a-select-option value="review-count">리뷰 많은 순</a-select-option> -->
@@ -190,6 +194,9 @@ export default {
           }
         }
       );
+    },
+    onSortBySelect(value) {
+      this.datas = this.datas.sort((a, b) => a[value] - b[value]);
     },
   },
 };
