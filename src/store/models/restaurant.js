@@ -25,7 +25,6 @@ const mutations = {
     state.reviews = status;
   },
   setRestaurantEvents(state, status) {
-    console.log(status);
     state.events = status;
   },
 };

@@ -116,7 +116,7 @@ export default {
       }
     },
     onSortBySelect(value) {
-      console.log(value);
+      // console.log(value);
       this.datas = this.datas.sort((a, b) => a[value] - b[value]);
     },
   },

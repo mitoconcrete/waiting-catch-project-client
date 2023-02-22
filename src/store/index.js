@@ -10,7 +10,6 @@ export default new Vuex.Store({
   },
   mutations: {
     setIsGlobalLoading(state, status) {
-      console.log(status);
       state.isGlobalLoading = status;
     },
   },

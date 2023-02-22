@@ -160,7 +160,7 @@ export default {
   },
   methods: {
     onFinish() {
-      console.log(this.formState);
+      // console.log(this.formState);
     },
     onFinishFailed() {},
     moveBackward() {

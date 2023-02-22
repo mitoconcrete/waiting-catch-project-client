@@ -38,7 +38,6 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getGlobalEvents();
-    console.log(data);
     commit("setGlobalEvents", data);
   },
 

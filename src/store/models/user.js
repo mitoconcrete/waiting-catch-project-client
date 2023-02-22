@@ -69,7 +69,6 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getCustomerDetailInfo();
-    console.log(data);
     commit("setUserProfile", data);
   },
 

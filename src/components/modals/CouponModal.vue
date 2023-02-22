@@ -87,7 +87,6 @@ export default {
     activeKey: {
       immediate: true,
       handler: async function (tab) {
-        console.log(tab);
         if (tab === "1") {
           await this.$store.dispatch("syncMyCoupons");
           this.mycoupons = this.myCoupons;

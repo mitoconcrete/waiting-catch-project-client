@@ -215,7 +215,7 @@ export default {
       this.$store.commit("setIsRestaurantModalStatus", false);
     },
     onTabChange(val) {
-      console.log(val);
+      // console.log(val);
     },
     async handleLineup() {
       this.memberModalVisible = true;

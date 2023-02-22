@@ -168,7 +168,6 @@ export default {
       this.isModalVisible = true;
     },
     async onFinish() {
-      console.log(this.formState);
       if (!this.formState.content) {
         Modal.error({
           title: "필수 사항 체크",
