@@ -4,13 +4,13 @@
     <section class="restaurant-info-wrapper">
       <div
         class="image-wrapper"
-        :style="{ backgroundImage: `url(${restaurantBasic.imagePaths[0]})` }"
+        :style="{ backgroundImage: `url(${restaurantBasic.images})` }"
       ></div>
       <article class="information-wrapper">
         <div>
           <h1>{{ restaurantBasic.name }}</h1>
           <h3>{{ restaurantDetail.description }}</h3>
-          <a-rate :value="restaurantBasic.rate" />
+          <a-rate :value="restaurantDetail.rate" />
         </div>
         <div>
           <section class="details">
@@ -26,7 +26,7 @@
           </section>
           <section class="details">
             <InfoCircleOutlined />
-            <strong>{{ restaurantBasic.address }}</strong>
+            <strong>{{ restaurantDetail.address }}</strong>
           </section>
         </div>
       </article>
@@ -56,6 +56,7 @@ import {
 import ReviewList from "../ReviewList.vue";
 import EventList from "../EventList.vue";
 import MenuList from "../MenuList.vue";
+import { mapGetters } from "vuex";
 const MOCK_RESATURANT_BASIC = {
   name: "가게이름",
   imagePaths: [
@@ -75,7 +76,7 @@ const MOCK_RESATURANT_DETAIL = {
 };
 
 const MOCK_RESATURANT_EVENTS = [];
-const EVENT_COUNT = 10;
+const EVENT_COUNT = 0;
 for (let i = 1; i <= EVENT_COUNT; i++) {
   MOCK_RESATURANT_EVENTS.push({
     name: "이벤트 이름",
@@ -94,7 +95,7 @@ for (let i = 1; i <= EVENT_COUNT; i++) {
 }
 
 const MOCK_MENU = [];
-const MENU_COUNT = 5;
+const MENU_COUNT = 0;
 for (let i = 1; i <= MENU_COUNT; i++) {
   MOCK_MENU.push({
     name: "음식이름",
@@ -105,7 +106,7 @@ for (let i = 1; i <= MENU_COUNT; i++) {
 }
 
 const MOCK_REVIEW = [];
-const REIVEW_COUNT = 10;
+const REIVEW_COUNT = 0;
 for (let i = 1; i <= REIVEW_COUNT; i++) {
   MOCK_REVIEW.push({
     restaurantName: "가게이름",
@@ -124,13 +125,48 @@ export default {
   name: "RestaurantModal",
   data() {
     return {
-      restaurantBasic: MOCK_RESATURANT_BASIC,
-      restaurantDetail: MOCK_RESATURANT_DETAIL,
+      // restaurantBasic: MOCK_RESATURANT_BASIC,
+      // restaurantDetail: MOCK_RESATURANT_DETAIL,
       events: MOCK_RESATURANT_EVENTS,
       menus: MOCK_MENU,
       activeKey: "1",
       reviews: MOCK_REVIEW,
     };
+  },
+  computed: {
+    ...mapGetters({
+      restaurantBasic: "getRestaurantBasicInfo",
+      restaurantDetail: "getRestaurantDetailInfo",
+      menuData: "getRestaurantMenus",
+      reviewData: "getRestaurantReviews",
+      eventData: "getResaturantEvents",
+    }),
+  },
+  watch: {
+    activeKey: {
+      immediate: true,
+      handler: async function (key) {
+        if (key === "1") {
+          await this.$store.dispatch(
+            "syncRestaurantMenus",
+            this.restaurantDetail.id
+          );
+          this.menus = this.menuData;
+        } else if (key === "2") {
+          await this.$store.dispatch(
+            "syncRestaurantReviews",
+            this.restaurantDetail.id
+          );
+          this.reviews = this.reviewData;
+        } else {
+          await this.$store.dispatch(
+            "syncRestaurantEvents",
+            this.restaurantDetail.id
+          );
+          this.events = this.eventData;
+        }
+      },
+    },
   },
   components: {
     BackwardButton,
@@ -165,6 +201,7 @@ export default {
     height: 320px;
     background-repeat: no-repeat;
     background-size: cover;
+    background-color: #dadce0;
   }
 
   .information-wrapper {

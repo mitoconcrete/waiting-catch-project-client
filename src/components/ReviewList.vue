@@ -4,13 +4,13 @@
       <h1>{{ data.restaurantName }}</h1>
       <h3>{{ data.content }}</h3>
       <a-rate :value="data.rate" />
-      <div v-if="data.images.length">
+      <div v-if="data.imagePaths.length">
         <a-image v-for="image in data.images" :src="image" alt="리뷰이미지" />
       </div>
       <p>
         {{
           dateFormatter(
-            data.createdDate,
+            new Date(data.createdDate),
             "yyyy년 M월 d일 eee요일, h시 m분 작성"
           )
         }}

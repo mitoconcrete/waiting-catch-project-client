@@ -59,7 +59,7 @@ export const api = {
   getRestaurantReviews(restaurantId) {
     return http.get(`/restaurants/${restaurantId}/reviews`);
   },
-  getRetaurantEvents(restaurantId) {
+  getRestaurantEvents(restaurantId) {
     return http.get(`/restaurants/${restaurantId}/events`);
   },
   getGlobalEvents() {

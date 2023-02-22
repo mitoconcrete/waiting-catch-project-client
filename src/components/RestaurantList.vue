@@ -39,6 +39,8 @@
   </ul>
 </template>
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "RestaurantList",
   props: {
@@ -52,8 +54,15 @@ export default {
     },
   },
   methods: {
-    handleClick(restaurantId) {
-      console.log(restaurantId);
+    async handleClick(restaurantId) {
+      const token = window.localStorage.getItem("accessToken");
+      if (!token) {
+        this.$router.replace("/login");
+        return;
+      }
+
+      await this.$store.dispatch("syncRestaurantBasicInfo", restaurantId);
+      await this.$store.dispatch("syncRestaurantDetailInfo", restaurantId);
       this.$store.commit("setIsRestaurantModalStatus", true);
     },
   },
