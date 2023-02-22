@@ -19,6 +19,7 @@ const state = {
     stringAddress: "",
   },
   reviews: [],
+  waitings: [],
 };
 
 const mutations = {
@@ -37,6 +38,9 @@ const mutations = {
   setUserReviews(state, status) {
     state.reviews = status;
   },
+  setUserWaitings(state, status) {
+    state.waitings = status;
+  },
 };
 
 const getters = {
@@ -51,6 +55,9 @@ const getters = {
   },
   getUserReviews(state) {
     return state.reviews;
+  },
+  getUserWaitings(state) {
+    return state.waitings;
   },
 };
 
@@ -121,6 +128,18 @@ const actions = {
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getCustomerReviews();
     commit("setUserReviews", data.data);
+  },
+  async syncUserWaitings({ commit }, payload) {
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      return (window.location.href = "/login");
+    }
+    api.default.setHeadersAuthorization(token);
+
+    const { data } = payload
+      ? await api.getWaitingHistories(payload)
+      : await api.getWaitingHistories();
+    commit("setUserWaitings", data.data);
   },
 };
 

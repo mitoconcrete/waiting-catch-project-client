@@ -16,7 +16,7 @@
           {{ reviewTarget.name }}
         </a-form-item>
         <a-form-item label="방문일시">
-          {{ reviewTarget.endedAt }}
+          {{ reviewTarget.arrivedAt }}
         </a-form-item>
         <a-form-item
           label="리뷰작성"
@@ -57,22 +57,32 @@
         <p class="time-string">
           <strong>줄서기 시작 시간 :</strong>
           {{
-            dateFormatter(data.startedAt, "yyyy년 MM월 dd일 eee요일, h시 m분")
+            dateFormatter(
+              new Date(data.startedAt),
+              "yyyy년 MM월 dd일 eee요일, h시 m분"
+            )
           }}
         </p>
         <p class="time-string">
           <strong>줄서기 종료 시간 :</strong>
-          {{ dateFormatter(data.endedAt, "yyyy년 MM월 dd일 eee요일, h시 m분") }}
+          {{
+            data.arrivedAt
+              ? dateFormatter(
+                  new Date(data.arrivedAt),
+                  "yyyy년 MM월 dd일 eee요일, h시 m분"
+                )
+              : "-"
+          }}
         </p>
         <div class="badge-wrapper">
           <p
-            v-if="data.isReviewed && data.status === 'APPROVE'"
+            v-if="data.reviewed && data.status === 'ARRIVE'"
             class="badge review-badge complete"
           >
             리뷰 완료
           </p>
           <p
-            v-else-if="!data.isReviewed && data.status === 'APPROVE'"
+            v-else-if="!data.reviewed && data.status === 'ARRIVE'"
             class="badge review-badge required"
           >
             리뷰 가능
@@ -88,10 +98,10 @@ import BackwardButton from "../components/BackwardButton.vue";
 import { dateFormatter } from "@/utils/date.js";
 import Modal from "ant-design-vue/lib/modal";
 import { UploadOutlined } from "@ant-design/icons-vue";
-import { getCurrentInstance } from "vue";
+import { mapGetters } from "vuex";
 
 const MOCK_DATA = [];
-const DATA_COUNT = 10;
+const DATA_COUNT = 0;
 for (let i = 1; i <= DATA_COUNT; i++) {
   MOCK_DATA.push({
     restaurantId: i,
@@ -101,13 +111,13 @@ for (let i = 1; i <= DATA_COUNT; i++) {
       i % 4 == 0
         ? "WAIT"
         : i % 4 === 1
-        ? "APPROVE"
+        ? "ARRIVE"
         : i % 4 === 2
         ? "CANCEL"
         : "CALL",
-    isReviewed: i % 2 == 0 ? true : false,
+    reviewed: i % 2 == 0 ? true : false,
     startedAt: new Date(),
-    endedAt: new Date(),
+    arrivedAt: new Date(),
   });
 }
 
@@ -123,12 +133,10 @@ export default {
       restaurantId: id,
       restaurantName,
       status,
-      isReviewed,
-      endedAt,
+      reviewed,
+      arrivedAt,
     }) {
-      const appContext = getCurrentInstance();
-      console.log(appContext);
-      if (status != "APPROVE") {
+      if (status != "ARRIVE") {
         Modal.error({
           title: "리뷰 불가",
           content: "입장완료한 줄서기 내역에만 리뷰를 추가할 수 있습니다.",
@@ -137,19 +145,18 @@ export default {
         return;
       }
 
-      if (isReviewed) {
+      if (reviewed) {
         Modal.error({
           title: "리뷰 불가",
           content: "이미 리뷰를 완료한 줄서기 내역입니다.",
-          //   appContext,
         });
         return;
       }
       this.reviewTarget = {
         id: id,
         name: restaurantName,
-        endedAt: this.dateFormatter(
-          endedAt,
+        arrivedAt: this.dateFormatter(
+          new Date(arrivedAt),
           "yyyy년 MM월 dd일 eee요일, h시 m분"
         ),
       };
@@ -161,7 +168,6 @@ export default {
         Modal.error({
           title: "필수 사항 체크",
           content: "리뷰는 반드시 작성해야합니다.",
-          //   appContext,
         });
         return;
       }
@@ -188,16 +194,25 @@ export default {
       this.reviewTarget = {
         id: 0,
         name: "",
-        endedAt: "",
+        arrivedAt: "",
       };
     },
+  },
+  computed: {
+    ...mapGetters({
+      userWaitings: "getUserWaitings",
+    }),
+  },
+  async created() {
+    await this.$store.dispatch("syncUserWaitings");
+    this.datas = this.userWaitings;
   },
   data() {
     return {
       datas: MOCK_DATA,
       status: {
         WAIT: "대기",
-        APPROVE: "입장",
+        ARRIVE: "입장",
         CANCEL: "취소",
         CALL: "호출",
       },
@@ -210,7 +225,7 @@ export default {
       reviewTarget: {
         id: 0,
         name: "",
-        endedAt: "",
+        arrivedAt: "",
       },
     };
   },
