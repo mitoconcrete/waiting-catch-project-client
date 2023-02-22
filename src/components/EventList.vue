@@ -3,8 +3,8 @@
     <section class="event-label">
       <h1>{{ data.name }}</h1>
       <p>
-        {{ dateFormatter(data.eventStartDate, "yyyy.M.d") }} ~
-        {{ dateFormatter(data.eventEndDate, "yyyy.M.d") }}
+        {{ dateFormatter(new Date(data.eventStartDate), "yyyy.M.d") }} ~
+        {{ dateFormatter(new Date(data.eventEndDate), "yyyy.M.d") }}
       </p>
     </section>
     <CouponList :datas="data.couponCreators" :is-downloadable="true" />

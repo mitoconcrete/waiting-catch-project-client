@@ -16,7 +16,7 @@
       할인
     </p>
     <p v-if="'expireDate' in data">
-      ~{{ dateFormatter(data.expireDate, "yyyy.M.d") }}
+      ~{{ dateFormatter(new Date(data.expireDate), "yyyy.M.d") }}
     </p>
   </div>
 </template>

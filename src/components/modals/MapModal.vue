@@ -103,7 +103,7 @@ export default {
       });
       Modal.success({
         title: "위치설정완료",
-        content: "위치가 설정되었습니다.",
+        content: "위치가 수정되었습니다.",
       });
     },
   },

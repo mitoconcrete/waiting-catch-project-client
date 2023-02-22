@@ -103,7 +103,7 @@ export const api = {
     return http.post(`/restaurants/${restaurantId}/lineup`);
   },
   postCoupon(creatorId) {
-    return http.post(`/api/counpon/creators/${creatorId}`);
+    return http.post(`/coupons/creators/${creatorId}`);
   },
   login(payload) {
     return http.post("/customer/signin", payload);

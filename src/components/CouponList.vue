@@ -1,12 +1,17 @@
 <template>
   <ul class="coupon-list-wrapper">
     <li v-for="data in datas">
-      <Coupon :data="data" :is-downloadable="isDownloadable" />
+      <Coupon
+        :data="data"
+        :is-downloadable="isDownloadable"
+        @download="downloadCoupon"
+      />
     </li>
   </ul>
 </template>
 <script>
 import Coupon from "./Coupon.vue";
+import { Modal } from "ant-design-vue";
 
 export default {
   props: {
@@ -20,6 +25,15 @@ export default {
     },
   },
   components: { Coupon },
+  methods: {
+    async downloadCoupon(creatorId) {
+      await this.$store.dispatch("downloadCoupon", creatorId);
+      Modal.success({
+        title: "다운로드 성공",
+        content: "쿠폰이 성공적으로 다운로드 되었습니다.",
+      });
+    },
+  },
 };
 </script>
 <style lang="scss">

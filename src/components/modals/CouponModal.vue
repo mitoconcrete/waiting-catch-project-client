@@ -24,22 +24,22 @@ for (let i = 1; i <= DATA_1_COUNT; i++) {
     isUsed: i % 2 === 0 ? true : false,
     discountPrice: 10000,
     discountType: i % 2 === 0 ? "DISCOUNT" : "PERCENT",
-    expireDate: new Date(),
+    expireDate: "2023-02-22T05:46:00",
   });
 }
 
 for (let i = 1; i <= DATA_2_COUNT; i++) {
   MOCK_DATA_2.push({
     name: "이벤트 이름",
-    eventStartDate: new Date(),
-    eventEndDate: new Date(),
+    eventStartDate: "2023-02-22T05:46:00",
+    eventEndDate: "2023-02-22T05:46:00",
     couponCreators: [
       {
         id: i,
         name: "쿠폰이름",
         discountPrice: 100,
         discountType: i % 2 === 0 ? "DISCOUNT" : "PERCENT",
-        expireDate: new Date(),
+        expireDate: "2023-02-22T05:46:00",
       },
     ],
   });
@@ -49,6 +49,7 @@ import { dateFormatter } from "@/utils/date.js";
 import BackwordButton from "@/components/BackwardButton.vue";
 import CouponList from "../CouponList.vue";
 import EventList from "../EventList.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "CouponModal",
@@ -63,6 +64,27 @@ export default {
       mycoupons: MOCK_DATA_1,
       events: MOCK_DATA_2,
     };
+  },
+  computed: {
+    ...mapGetters({
+      myCoupons: "getMyCoupons",
+      globalEvents: "getGlobalEvents",
+    }),
+  },
+  watch: {
+    activeKey: {
+      immediate: true,
+      handler: async function (tab) {
+        console.log(tab);
+        if (tab === "1") {
+          await this.$store.dispatch("syncMyCoupons");
+          this.mycoupons = this.myCoupons;
+        } else {
+          await this.$store.dispatch("syncGlobalEvents");
+          this.events = this.globalEvents;
+        }
+      },
+    },
   },
   methods: {
     dateFormatter,
