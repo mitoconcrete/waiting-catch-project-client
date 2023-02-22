@@ -5,7 +5,11 @@
       <h3>{{ data.content }}</h3>
       <a-rate :value="data.rate" />
       <div v-if="data.imagePaths.length">
-        <a-image v-for="image in data.images" :src="image" alt="리뷰이미지" />
+        <a-image
+          v-for="image in data.imagePaths"
+          :src="image"
+          alt="리뷰이미지"
+        />
       </div>
       <p>
         {{

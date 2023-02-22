@@ -7,6 +7,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import BackwardButton from "../components/BackwardButton.vue";
 import ReviewList from "../components/ReviewList.vue";
 
@@ -18,12 +19,12 @@ for (let i = 1; i <= DATA_COUNT; i++) {
     nickname: "닉네임",
     content: "너무 맛있어요. 근데 별로네요.",
     rate: 3,
-    images: [
+    imagePaths: [
       "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
       "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=960&q=80",
       "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
     ],
-    createdDate: new Date(),
+    createdDate: "2022-07-26",
   });
 }
 export default {
@@ -36,6 +37,15 @@ export default {
     return {
       datas: MOCK_DATA,
     };
+  },
+  computed: {
+    ...mapGetters({
+      userReviews: "getUserReviews",
+    }),
+  },
+  async created() {
+    await this.$store.dispatch("syncUserReviews");
+    this.datas = this.userReviews;
   },
   methods: {
     moveBackward() {

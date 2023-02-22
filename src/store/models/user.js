@@ -18,6 +18,7 @@ const state = {
     longitude: -1,
     stringAddress: "",
   },
+  reviews: [],
 };
 
 const mutations = {
@@ -33,6 +34,9 @@ const mutations = {
   setStringAddress(state, status) {
     state.position.stringAddress = status;
   },
+  setUserReviews(state, status) {
+    state.reviews = status;
+  },
 };
 
 const getters = {
@@ -45,13 +49,16 @@ const getters = {
   getUserPosition(state) {
     return state.position;
   },
+  getUserReviews(state) {
+    return state.reviews;
+  },
 };
 
 const actions = {
   async syncUserProfile({ commit }) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return;
+      return this.$router.push("/login");
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getCustomerDetailInfo();
@@ -66,7 +73,7 @@ const actions = {
   async logout({ commit }) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return;
+      return (window.location.href = "/login");
     }
     api.default.setHeadersAuthorization(token);
     await api.logout();
@@ -88,7 +95,7 @@ const actions = {
   async withdraw({ commit }) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return;
+      return (window.location.href = "/login");
     }
     api.default.setHeadersAuthorization(token);
     await api.deleteCustomer();
@@ -105,6 +112,15 @@ const actions = {
       username: "",
     });
     window.localStorage.removeItem("accessToken");
+  },
+  async syncUserReviews({ commit }) {
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      return (window.location.href = "/login");
+    }
+    api.default.setHeadersAuthorization(token);
+    const { data } = await api.getCustomerReviews();
+    commit("setUserReviews", data.data);
   },
 };
 
