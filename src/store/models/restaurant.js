@@ -25,6 +25,15 @@ const actions = {
     const { data } = await api.getRestaurants(params);
     commit("setRestaurants", data);
   },
+  async syncRestaurantsByKeywords({ commit }, params) {
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      return;
+    }
+    api.default.setHeadersAuthorization(token);
+    const { data } = await api.getRestaurantSearch(params);
+    commit("setRestaurants", data);
+  },
 };
 
 export default {

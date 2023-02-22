@@ -7,7 +7,7 @@
       :loading="isSearching"
       @search="onSearch"
     />
-    <section v-if="datas.length" class="data-filter">
+    <section class="data-filter">
       <a-radio-group
         v-model:value="dataFilter"
         button-style="solid"
@@ -17,16 +17,24 @@
         <a-radio-button value="1">즉시입장</a-radio-button>
         <a-radio-button value="2">줄서기</a-radio-button>
       </a-radio-group>
-      <a-select placeholder="정렬 순서" style="width: 120px" @change="onSelect">
+      <a-select
+        placeholder="정렬 순서"
+        style="width: 120px"
+        @change="onSortBySelect"
+      >
         <a-select-option value="distance">가까운 순</a-select-option>
         <a-select-option value="rate">평점 높은 순</a-select-option>
         <!-- <a-select-option value="review-count">리뷰 많은 순</a-select-option> -->
       </a-select>
     </section>
+    <RestaurantList
+      v-if="datas.length"
+      :datas="datas"
+      :direction-type="'row'"
+    />
     <section v-else class="empty-search-screen">
       검색된 매장이 없습니다.
     </section>
-    <RestaurantList :datas="datas" :direction-type="'row'" />
   </section>
 </template>
 
@@ -51,8 +59,9 @@
 
 <script>
 import RestaurantList from "@/components/RestaurantList.vue";
+import { mapGetters } from "vuex";
 
-const DATA_COUNT = 10;
+const DATA_COUNT = 0;
 const MOCK_DATA = [];
 for (let i = 1; i <= DATA_COUNT; i++) {
   MOCK_DATA.push({
@@ -77,15 +86,38 @@ export default {
       dataFilter: "0",
     };
   },
+  computed: {
+    ...mapGetters({
+      userPosition: "getUserPosition",
+      restaurants: "getRestaurants",
+    }),
+  },
   methods: {
-    onSearch(value) {
-      console.log(value);
+    async onSearch(keyword) {
+      await this.$store.dispatch("syncRestaurantsByKeywords", {
+        latitude: this.userPosition.latitude,
+        longitude: this.userPosition.longitude,
+        keyword: keyword,
+      });
+      this.datas = this.restaurants;
     },
     onChange(e) {
-      console.log(e.target.value);
+      const selectTarget = e.target.value;
+      if (selectTarget === "0") {
+        this.datas = this.restaurants;
+      } else if (selectTarget === "1") {
+        this.datas = this.restaurants.filter(
+          (el) => el.currentWaitingNumber === 0
+        );
+      } else {
+        this.datas = this.restaurants.filter(
+          (el) => el.currentWaitingNumber !== 0
+        );
+      }
     },
-    onSelect(value) {
+    onSortBySelect(value) {
       console.log(value);
+      this.datas = this.datas.sort((a, b) => a[value] - b[value]);
     },
   },
   components: { RestaurantList },
