@@ -149,7 +149,7 @@ export default {
     }),
   },
   async created() {
-    const token = localStorage.getItem("acceeToken");
+    const token = localStorage.getItem("accessToken");
     if (!token) {
       return;
     }
