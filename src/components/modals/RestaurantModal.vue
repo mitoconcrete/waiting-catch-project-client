@@ -232,6 +232,7 @@ export default {
       });
     },
     async requestWaiting() {
+      /* Production : 줄서기 시 자신의 현재위치 기반으로 체크 */
       try {
         navigator.geolocation.getCurrentPosition(async ({ coords }) => {
           const token = localStorage.getItem("accessToken");
@@ -253,6 +254,25 @@ export default {
       } catch (e) {
         throw new Error(e);
       }
+      /* Test : 줄서기 시 자신의 설정위치 기반으로 체크 */
+      // try {
+      //   const token = localStorage.getItem("accessToken");
+      //   api.default.setHeadersAuthorization(token);
+      //   const payload = {
+      //     latitude: this.userPosition.latitude,
+      //     longitude: this.userPosition.longitude,
+      //     numOfMember: this.enterCount,
+      //   };
+      //   await api.postWaiting(this.restaurantDetail.id, payload);
+      //   Modal.success({
+      //     title: "줄서기 성공",
+      //     content:
+      //       "줄서기 신청이 완료되었습니다. 순서가 준비되면 문자로 알려드립니다.",
+      //   });
+      //   this.isCurrentRestaurantWaiting();
+      // } catch (e) {
+      //   throw new Error(e);
+      // }
     },
     handleMemberCount() {
       if (this.enterCount <= 0 || this.enterCount > 10) {
