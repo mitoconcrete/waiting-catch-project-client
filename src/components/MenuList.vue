@@ -2,7 +2,7 @@
   <ul class="menu-wrapper">
     <li v-for="data in datas" class="menu">
       <section>
-        <a-image :src="data.imagePath" />
+        <a-image :src="data.imageUrl" />
       </section>
       <section>
         <h1>{{ data.name }}</h1>
