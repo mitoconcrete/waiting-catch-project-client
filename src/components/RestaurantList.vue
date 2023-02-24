@@ -156,6 +156,7 @@ export default {
     }
     .description-section {
       margin: auto 0;
+      flex: 1;
       h3 {
         margin: 0;
         font-size: 20px;
