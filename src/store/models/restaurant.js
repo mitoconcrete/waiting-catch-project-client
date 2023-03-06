@@ -6,6 +6,8 @@ const state = {
   menus: [],
   events: [],
   reviews: [],
+  hasRemainReviewData: false,
+  hasRemainEventData: false,
   hasRemainRestaurantData: false,
 };
 
@@ -26,13 +28,25 @@ const mutations = {
     state.menus = status;
   },
   setRestaurantReviews(state, status) {
-    state.reviews = status;
+    state.reviews = [...state.reviews, ...status];
   },
   setRestaurantEvents(state, status) {
-    state.events = status;
+    state.events = [...state.events, ...status];
   },
   setHasRemainRestaurantData(state, status) {
     state.hasRemainRestaurantData = status;
+  },
+  setHasRemainReviewData(state, status) {
+    state.hasRemainReviewData = status;
+  },
+  setHasRemainEventData(state, status) {
+    state.hasRemainEventData = status;
+  },
+  initReviews(state) {
+    state.reviews = [];
+  },
+  initEvents(state) {
+    state.events = [];
   },
 };
 
@@ -57,6 +71,12 @@ const getters = {
   },
   getHasRemainRestaurantData(state) {
     return state.hasRemainRestaurantData;
+  },
+  getHasRemainReviewData(state) {
+    return state.hasRemainReviewData;
+  },
+  getHasRemainEventData(state) {
+    return state.hasRemainEventData;
   },
 };
 
@@ -109,26 +129,34 @@ const actions = {
     const { data } = await api.getRestaurantMenus(restaurantId);
     commit("setRestaurantMenus", data.data);
   },
-  async syncRestaurantReviews({ commit }, restaurantId) {
+  async syncRestaurantReviews({ commit }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return (window.location.href = "/login");
     }
     api.default.setHeadersAuthorization(token);
-    const { data } = await api.getRestaurantReviews(restaurantId);
+    const { data } = await api.getRestaurantReviews(payload);
     commit("setRestaurantReviews", data.data.content);
+    commit("setHasRemainReviewData", !data.data.last);
   },
-  async syncRestaurantEvents({ commit }, restaurantId) {
+  async syncRestaurantEvents({ commit }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return (window.location.href = "/login");
     }
     api.default.setHeadersAuthorization(token);
-    const { data } = await api.getRestaurantEvents(restaurantId);
-    commit("setRestaurantEvents", data.data);
+    const { data } = await api.getRestaurantEvents(payload);
+    commit("setRestaurantEvents", data.data.content);
+    commit("setHasRemainEventData", !data.data.last);
   },
   initRestaurants({ commit }) {
     commit("initRestaurants");
+  },
+  initReviews({ commit }) {
+    commit("initReviews");
+  },
+  initEvents({ commit }) {
+    commit("initEvents");
   },
 };
 

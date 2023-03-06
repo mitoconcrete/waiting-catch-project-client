@@ -66,11 +66,13 @@ export const api = {
   getRestaurantMenus(restaurantId) {
     return http.get(`/customer/restaurants/${restaurantId}/menus`);
   },
-  getRestaurantReviews(restaurantId) {
-    return http.get(`/customer/restaurants/${restaurantId}/reviews`);
+  getRestaurantReviews({ restaurantId, params }) {
+    return http.get(`/customer/restaurants/${restaurantId}/reviews`, {
+      params,
+    });
   },
-  getRestaurantEvents(restaurantId) {
-    return http.get(`/customer/restaurants/${restaurantId}/events`);
+  getRestaurantEvents({ restaurantId, params }) {
+    return http.get(`/customer/restaurants/${restaurantId}/events`, { params });
   },
   getGlobalEvents() {
     return http.get("/customer/events");

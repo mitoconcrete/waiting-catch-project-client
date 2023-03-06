@@ -18,7 +18,10 @@
   </a-modal>
   <div class="modal-wrapper">
     <BackwardButton @click="moveBackward" message="가게 정보" />
-    <section class="restaurant-info-wrapper">
+    <section
+      class="restaurant-info-wrapper"
+      @scroll="handleNotificationListScroll"
+    >
       <div
         class="image-wrapper"
         :style="{ backgroundImage: `url(${restaurantBasic.images})` }"
@@ -81,80 +84,81 @@ import MenuList from "../MenuList.vue";
 import { mapGetters } from "vuex";
 import { api } from "../../utils/apis";
 import { Modal } from "ant-design-vue";
-const MOCK_RESATURANT_BASIC = {
-  name: "가게이름",
-  imagePaths: [
-    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
-  ],
-  rate: 4,
-  address: "경기도 남양주시 순화궁로",
-};
+import { toPathValueStr } from "ant-design-vue/lib/vc-cascader/utils/commonUtil";
+// const MOCK_RESATURANT_BASIC = {
+//   name: "가게이름",
+//   imagePaths: [
+//     "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
+//   ],
+//   rate: 4,
+//   address: "경기도 남양주시 순화궁로",
+// };
 
-const MOCK_RESATURANT_DETAIL = {
-  name: "가게이름",
-  address: "경기도 남양주시 순화궁로",
-  phoneNumber: "01012341234",
-  description: "가게 설명입니다.",
-  openTime: "09:00",
-  closeTime: "23:00",
-};
+// const MOCK_RESATURANT_DETAIL = {
+//   name: "가게이름",
+//   address: "경기도 남양주시 순화궁로",
+//   phoneNumber: "01012341234",
+//   description: "가게 설명입니다.",
+//   openTime: "09:00",
+//   closeTime: "23:00",
+// };
 
-const MOCK_RESATURANT_EVENTS = [];
-const EVENT_COUNT = 0;
-for (let i = 1; i <= EVENT_COUNT; i++) {
-  MOCK_RESATURANT_EVENTS.push({
-    name: "이벤트 이름",
-    eventStartDate: new Date(),
-    eventEndDate: new Date(),
-    couponCreators: [
-      {
-        id: i,
-        name: "쿠폰이름",
-        discountPrice: 100,
-        discountType: i % 2 === 0 ? "DISCOUNT" : "PERCENT",
-        expireDate: new Date(),
-      },
-    ],
-  });
-}
+// const MOCK_RESATURANT_EVENTS = [];
+// const EVENT_COUNT = 0;
+// for (let i = 1; i <= EVENT_COUNT; i++) {
+//   MOCK_RESATURANT_EVENTS.push({
+//     name: "이벤트 이름",
+//     eventStartDate: new Date(),
+//     eventEndDate: new Date(),
+//     couponCreators: [
+//       {
+//         id: i,
+//         name: "쿠폰이름",
+//         discountPrice: 100,
+//         discountType: i % 2 === 0 ? "DISCOUNT" : "PERCENT",
+//         expireDate: new Date(),
+//       },
+//     ],
+//   });
+// }
 
-const MOCK_MENU = [];
-const MENU_COUNT = 0;
-for (let i = 1; i <= MENU_COUNT; i++) {
-  MOCK_MENU.push({
-    name: "음식이름",
-    price: i * 3000,
-    imagePath:
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
-  });
-}
+// const MOCK_MENU = [];
+// const MENU_COUNT = 0;
+// for (let i = 1; i <= MENU_COUNT; i++) {
+//   MOCK_MENU.push({
+//     name: "음식이름",
+//     price: i * 3000,
+//     imagePath:
+//       "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+//   });
+// }
 
-const MOCK_REVIEW = [];
-const REIVEW_COUNT = 0;
-for (let i = 1; i <= REIVEW_COUNT; i++) {
-  MOCK_REVIEW.push({
-    restaurantName: "가게이름",
-    nickname: "닉네임",
-    content: "너무 맛있어요. 근데 별로네요.",
-    rate: 3,
-    images: [
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
-      "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=960&q=80",
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-    ],
-    createdDate: new Date(),
-  });
-}
+// const MOCK_REVIEW = [];
+// const REIVEW_COUNT = 0;
+// for (let i = 1; i <= REIVEW_COUNT; i++) {
+//   MOCK_REVIEW.push({
+//     restaurantName: "가게이름",
+//     nickname: "닉네임",
+//     content: "너무 맛있어요. 근데 별로네요.",
+//     rate: 3,
+//     images: [
+//       "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+//       "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=960&q=80",
+//       "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+//     ],
+//     createdDate: new Date(),
+//   });
+// }
 export default {
   name: "RestaurantModal",
   data() {
     return {
       // restaurantBasic: MOCK_RESATURANT_BASIC,
       // restaurantDetail: MOCK_RESATURANT_DETAIL,
-      events: MOCK_RESATURANT_EVENTS,
-      menus: MOCK_MENU,
+      events: [],
+      menus: [],
       activeKey: "1",
-      reviews: MOCK_REVIEW,
+      reviews: [],
       activeStatus: false,
       lineupId: 0,
       enterCount: 0,
@@ -170,6 +174,8 @@ export default {
       eventData: "getResaturantEvents",
       userPosition: "getUserPosition",
       userWaitings: "getUserWaitings",
+      hasRemainEvent: "getHasRemainEventData",
+      hasRemainReview: "getHasRemainReviewData",
     }),
   },
   watch: {
@@ -183,17 +189,9 @@ export default {
           );
           this.menus = this.menuData;
         } else if (key === "2") {
-          await this.$store.dispatch(
-            "syncRestaurantReviews",
-            this.restaurantDetail.id
-          );
-          this.reviews = this.reviewData;
+          this.syncReview();
         } else {
-          await this.$store.dispatch(
-            "syncRestaurantEvents",
-            this.restaurantDetail.id
-          );
-          this.events = this.eventData;
+          this.syncEvent();
         }
       },
     },
@@ -208,6 +206,8 @@ export default {
     MenuList,
   },
   created() {
+    this.$store.dispatch("initReviews");
+    this.$store.dispatch("initEvents");
     this.isCurrentRestaurantWaiting();
   },
   methods: {
@@ -329,6 +329,49 @@ export default {
           return;
         }
       });
+    },
+    handleNotificationListScroll(e) {
+      const { scrollHeight, scrollTop, clientHeight } = e.target;
+      const isAtTheBottom =
+        scrollHeight <= Math.round(scrollTop + clientHeight);
+      console.log(scrollHeight, Math.round(scrollTop + clientHeight));
+      // 일정 이상 밑으로 내려오면 함수 실행 / 반복된 호출을 막기위해 1초마다 스크롤 감지 후 실행
+      if (isAtTheBottom) {
+        setTimeout(() => this.handleLoadMore(), 1000);
+      } else {
+        this.isScrollBottom = false;
+      }
+    },
+    async handleLoadMore() {
+      if (this.activeKey === "2" && this.hasRemainReview) {
+        const lastId = this.reviews[this.reviews.length - 1].id;
+        await this.syncReview(lastId);
+      } else if (this.activeKey === "3" && this.hasRemainEvent) {
+        const lastId = this.events[this.events.length - 1].id;
+        await this.syncEvent(lastId);
+      }
+    },
+    async syncReview(id) {
+      const payload = {
+        params: {
+          size: 10,
+          lastId: id,
+        },
+        restaurantId: this.restaurantDetail.id,
+      };
+      await this.$store.dispatch("syncRestaurantReviews", payload);
+      this.reviews = this.reviewData;
+    },
+    async syncEvent(id) {
+      const payload = {
+        params: {
+          size: 10,
+          lastId: id,
+        },
+        restaurantId: this.restaurantDetail.id,
+      };
+      await this.$store.dispatch("syncRestaurantEvents", payload);
+      this.events = this.eventData;
     },
   },
 };
