@@ -60,6 +60,7 @@
 <script>
 import RestaurantList from "@/components/RestaurantList.vue";
 import { mapGetters } from "vuex";
+import { Modal } from "ant-design-vue";
 
 const DATA_COUNT = 0;
 const MOCK_DATA = [];
@@ -86,23 +87,40 @@ export default {
       dataFilter: "0",
     };
   },
+  props: {
+    isBottom: false,
+  },
   created() {
+    if (this.userPosition.latitude == -1 && this.userPosition.longitude == -1) {
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        const { latitude, longitude } = coords;
+        this.$store.dispatch("syncUserPosition", {
+          latitude: latitude,
+          longitude: longitude,
+        });
+      });
+    }
     this.$store.dispatch("initRestaurants");
   },
   computed: {
     ...mapGetters({
       userPosition: "getUserPosition",
       restaurants: "getRestaurants",
+      hasRemainData: "getHasRemainRestaurantData",
     }),
+  },
+  watch: {
+    isBottom(value) {
+      console.log(value, this.hasRemainData);
+      if (value && this.hasRemainData) {
+        const lastId = this.datas[this.datas.length - 1].id;
+        this.syncData(this.searchKeyword, lastId);
+      }
+    },
   },
   methods: {
     async onSearch(keyword) {
-      await this.$store.dispatch("syncRestaurantsByKeywords", {
-        latitude: this.userPosition.latitude,
-        longitude: this.userPosition.longitude,
-        keyword: keyword,
-      });
-      this.datas = this.restaurants;
+      this.syncData(keyword);
     },
     onChange(e) {
       const selectTarget = e.target.value;
@@ -121,6 +139,15 @@ export default {
     onSortBySelect(value) {
       // console.log(value);
       this.datas = this.datas.sort((a, b) => a[value] - b[value]);
+    },
+    async syncData(keyword, lastId) {
+      await this.$store.dispatch("syncRestaurantsByKeywords", {
+        latitude: this.userPosition.latitude,
+        longitude: this.userPosition.longitude,
+        keyword: keyword,
+        id: lastId,
+      });
+      this.datas = this.restaurants;
     },
   },
   components: { RestaurantList },
