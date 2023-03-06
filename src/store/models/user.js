@@ -20,6 +20,8 @@ const state = {
   },
   reviews: [],
   waitings: [],
+  hasRemainReviews: false,
+  hasRemainWaitingHistories: false,
 };
 
 const mutations = {
@@ -36,10 +38,25 @@ const mutations = {
     state.position.stringAddress = status;
   },
   setUserReviews(state, status) {
-    state.reviews = status;
+    state.reviews = [...state.reviews, ...status];
   },
   setUserWaitings(state, status) {
     state.waitings = status;
+  },
+  setHasRemainWaitingHistories(state, status) {
+    state.hasRemainWaitingHistories = status;
+  },
+  setUserWaitingHistories(state, status) {
+    state.waitings = [...state.waitings, ...status];
+  },
+  setHasRemainReviews(state, status) {
+    state.hasRemainReviews = status;
+  },
+  initReviews(state) {
+    state.reviews = [];
+  },
+  initWaitings(state) {
+    state.waitings = [];
   },
 };
 
@@ -59,6 +76,15 @@ const getters = {
   getUserWaitings(state) {
     return state.waitings;
   },
+  getHasRemainWaitingHistories(state) {
+    return state.hasRemainWaitingHistories;
+  },
+  getUserWaitingHistories(state) {
+    return state.waitings;
+  },
+  getHasRemainReviews(state) {
+    return state.hasRemainReviews;
+  },
 };
 
 const actions = {
@@ -69,7 +95,7 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getCustomerDetailInfo();
-    commit("setUserProfile", data);
+    commit("setUserProfile", data.data);
   },
 
   syncUserPosition({ commit }, status) {
@@ -119,20 +145,41 @@ const actions = {
     });
     window.localStorage.removeItem("accessToken");
   },
-  async syncUserReviews({ commit }) {
+  async syncUserReviews({ commit }, params) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return (window.location.href = "/login");
     }
     api.default.setHeadersAuthorization(token);
-    const { data } = await api.getCustomerReviews();
-    commit("setUserReviews", data.data);
+    const { data } = await api.getCustomerReviews(params);
+    console.log(data);
+    commit("setUserReviews", data.data.content);
+    commit("setHasRemainReviews", !data.data.last);
   },
   async syncUserWaitings({ commit }, payload) {
-    const { data } = payload
-      ? await api.getWaitingHistories(payload)
-      : await api.getWaitingHistories();
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      return (window.location.href = "/login");
+    }
+    api.default.setHeadersAuthorization(token);
+    const { data } = await api.getWaitings(payload);
     commit("setUserWaitings", data.data);
+  },
+  async syncUserWaitingHistories({ commit }, payload) {
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      return (window.location.href = "/login");
+    }
+    api.default.setHeadersAuthorization(token);
+    const { data } = await api.getWaitingHistories(payload);
+    commit("setUserWaitingHistories", data.data.content);
+    commit("setHasRemainWaitingHistories", !data.data.last);
+  },
+  initWaitings({ commit }) {
+    commit("initWaitings");
+  },
+  initReviews({ commit }) {
+    commit("initReviews");
   },
 };
 

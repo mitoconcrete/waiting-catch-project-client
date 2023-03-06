@@ -1,9 +1,18 @@
 <template>
+  <a-modal
+    v-model:visible="isCheckCoupon"
+    title="쿠폰 사용 확인"
+    @ok="handleUseCoupon"
+  >
+  </a-modal>
   <section class="modal-wrapper">
     <BackwordButton @click="moveBackward" message="쿠폰" />
     <a-tabs v-model:activeKey="activeKey">
       <a-tab-pane key="1" tab="현재 보유 쿠폰" style="height: 200px"
-        ><CouponList :datas="mycoupons" :is-downloadable="false"
+        ><CouponList
+          :datas="mycoupons"
+          :is-downloadable="false"
+          @click="selectCoupon"
       /></a-tab-pane>
       <a-tab-pane key="2" tab="다운 가능 쿠폰" force-render>
         <EventList :datas="events" />
@@ -13,9 +22,9 @@
 </template>
 <script>
 const MOCK_DATA_1 = [];
-const DATA_1_COUNT = 10;
+const DATA_1_COUNT = 0;
 const MOCK_DATA_2 = [];
-const DATA_2_COUNT = 10;
+const DATA_2_COUNT = 0;
 
 for (let i = 1; i <= DATA_1_COUNT; i++) {
   MOCK_DATA_1.push({
@@ -75,6 +84,7 @@ export default {
       activeKey: "1",
       mycoupons: MOCK_DATA_1,
       events: MOCK_DATA_2,
+      isCheckCoupon: false,
     };
   },
   computed: {
@@ -102,6 +112,10 @@ export default {
     moveBackward() {
       this.$store.commit("setIsCouponModalStatus", false);
     },
+    handleUseCoupon() {
+      console.log("?");
+    },
+    selectCoupon() {},
   },
 };
 </script>

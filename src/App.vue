@@ -23,6 +23,28 @@ export default {
       isGlobalLoading: "getIsGlobalLoading",
     }),
   },
+  data() {
+    return {
+      isScrollBottom: false,
+    };
+  },
+  methods: {
+    handleNotificationListScroll(e) {
+      const { scrollHeight, scrollTop, clientHeight } = e.target;
+      const isAtTheBottom =
+        scrollHeight === Math.round(scrollTop + clientHeight);
+      console.log(scrollHeight, Math.round(scrollTop + clientHeight));
+      // 일정 이상 밑으로 내려오면 함수 실행 / 반복된 호출을 막기위해 1초마다 스크롤 감지 후 실행
+      if (isAtTheBottom) {
+        setTimeout(() => this.handleLoadMore(), 1000);
+      } else {
+        this.isScrollBottom = false;
+      }
+    },
+    handleLoadMore() {
+      this.isScrollBottom = true;
+    },
+  },
 };
 </script>
 
@@ -33,8 +55,8 @@ export default {
       <MapModal v-if="isMapModalActive" />
       <CouponModal v-if="isCouponModalActive" />
       <RestaurantModal v-if="isRestaurantModalActive" />
-      <section class="screen-wrapper">
-        <RouterView />
+      <section class="screen-wrapper" @scroll="handleNotificationListScroll">
+        <RouterView :is-bottom="isScrollBottom" />
       </section>
     </div>
     <BottomNav />

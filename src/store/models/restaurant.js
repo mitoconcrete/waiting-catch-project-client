@@ -6,11 +6,15 @@ const state = {
   menus: [],
   events: [],
   reviews: [],
+  hasRemainRestaurantData: false,
 };
 
 const mutations = {
+  initRestaurants(state) {
+    state.restaurants = [];
+  },
   setRestaurants(state, status) {
-    state.restaurants = status;
+    state.restaurants = [...state.restaurants, ...status];
   },
   setRestaurantsBasicInfo(state, status) {
     state.restaurantBasicInfo = status;
@@ -26,6 +30,9 @@ const mutations = {
   },
   setRestaurantEvents(state, status) {
     state.events = status;
+  },
+  setHasRemainRestaurantData(state, status) {
+    state.hasRemainRestaurantData = status;
   },
 };
 
@@ -48,6 +55,9 @@ const getters = {
   getResaturantEvents(state) {
     return state.events;
   },
+  getHasRemainRestaurantData(state) {
+    return state.hasRemainRestaurantData;
+  },
 };
 
 const actions = {
@@ -59,7 +69,8 @@ const actions = {
     // api.default.setHeadersAuthorization(token);
     api.default.deleteHeadersAuthorization();
     const { data } = await api.getRestaurants(params);
-    commit("setRestaurants", data);
+    commit("setHasRemainRestaurantData", !data.data.last);
+    commit("setRestaurants", data.data.content);
   },
   async syncRestaurantsByKeywords({ commit }, params) {
     // const token = window.localStorage.getItem("accessToken");
@@ -68,7 +79,8 @@ const actions = {
     // }
     // api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantSearch(params);
-    commit("setRestaurants", data);
+    commit("setHasRemainRestaurantData", !data.data.last);
+    commit("setRestaurants", data.data.content);
   },
   async syncRestaurantBasicInfo({ commit }, restaurantId) {
     const token = window.localStorage.getItem("accessToken");
@@ -77,7 +89,7 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantBasicInfo(restaurantId);
-    commit("setRestaurantsBasicInfo", data);
+    commit("setRestaurantsBasicInfo", data.data);
   },
   async syncRestaurantDetailInfo({ commit }, restaurantId) {
     const token = window.localStorage.getItem("accessToken");
@@ -86,7 +98,7 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantDetailInfo(restaurantId);
-    commit("setRestaurantDetailInfo", data);
+    commit("setRestaurantDetailInfo", data.data);
   },
   async syncRestaurantMenus({ commit }, restaurantId) {
     const token = window.localStorage.getItem("accessToken");
@@ -95,7 +107,7 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantMenus(restaurantId);
-    commit("setRestaurantMenus", data);
+    commit("setRestaurantMenus", data.data);
   },
   async syncRestaurantReviews({ commit }, restaurantId) {
     const token = window.localStorage.getItem("accessToken");
@@ -104,7 +116,7 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantReviews(restaurantId);
-    commit("setRestaurantReviews", data.data);
+    commit("setRestaurantReviews", data.data.content);
   },
   async syncRestaurantEvents({ commit }, restaurantId) {
     const token = window.localStorage.getItem("accessToken");
@@ -113,7 +125,10 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantEvents(restaurantId);
-    commit("setRestaurantEvents", data);
+    commit("setRestaurantEvents", data.data);
+  },
+  initRestaurants({ commit }) {
+    commit("initRestaurants");
   },
 };
 

@@ -13,7 +13,7 @@ import ReviewList from "../components/ReviewList.vue";
 import { Modal } from "ant-design-vue";
 
 const MOCK_DATA = [];
-const DATA_COUNT = 10;
+const DATA_COUNT = 0;
 for (let i = 1; i <= DATA_COUNT; i++) {
   MOCK_DATA.push({
     restaurantName: "가게이름",
@@ -39,13 +39,26 @@ export default {
       datas: MOCK_DATA,
     };
   },
+  props: {
+    isBottom: false,
+  },
   computed: {
     ...mapGetters({
       userReviews: "getUserReviews",
+      hasRemainData: "getHasRemainReviews",
     }),
+  },
+  watch: {
+    isBottom(value) {
+      if (value && this.hasRemainData) {
+        const lastId = this.datas[this.datas.length - 1].id;
+        this.syncData(lastId);
+      }
+    },
   },
   async created() {
     const token = window.localStorage.getItem("accessToken");
+    console.log(token);
     if (!token) {
       Modal.warn({
         title: "로그인 요청",
@@ -54,12 +67,19 @@ export default {
       this.$router.replace("/info");
       return;
     }
-    await this.$store.dispatch("syncUserReviews");
-    this.datas = this.userReviews;
+    this.syncData();
   },
   methods: {
     moveBackward() {
       this.$router.push("/info");
+    },
+    async syncData(id) {
+      const payload = {
+        lastId: id,
+        size: 10,
+      };
+      await this.$store.dispatch("syncUserReviews", payload);
+      this.datas = this.userReviews;
     },
   },
 };

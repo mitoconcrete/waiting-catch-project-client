@@ -125,19 +125,10 @@ export default {
         await api.signup(this.formState);
 
         try {
-          const { headers } = await api.login({
+          await api.login({
             username: this.formState.username,
             password: this.formState.password,
           });
-          if ("authorization" in headers) {
-            const accessToken = await headers.authorization.slice(7);
-            localStorage.setItem("accessToken", accessToken);
-            this.$router.replace("/");
-            return;
-          } else {
-            this.$router.replace("/login");
-            return;
-          }
         } catch (e) {
           throw new Error(e);
         }

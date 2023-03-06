@@ -86,6 +86,9 @@ export default {
       dataFilter: "0",
     };
   },
+  created() {
+    this.$store.dispatch("initRestaurants");
+  },
   computed: {
     ...mapGetters({
       userPosition: "getUserPosition",

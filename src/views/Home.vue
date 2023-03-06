@@ -124,7 +124,7 @@ export default {
     RestaurantList,
   },
   async mounted() {
-    await this.$store.commit("setIsGlobalLoading", true);
+    this.$store.dispatch("initRestaurants");
     if (this.position.latitude == -1 && this.position.longitude == -1) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { latitude, longitude } = coords;
@@ -134,14 +134,31 @@ export default {
         });
       });
     } else {
-      this.getRestaurants(this.position.latitude, this.position.longitude);
-      this.getStringAddress(this.position.latitude, this.position.longitude);
+      this.syncData(this.position.latitude, this.position.longitude);
     }
+  },
+  props: {
+    isBottom: false,
   },
   watch: {
     async position({ latitude, longitude }) {
-      this.getRestaurants(latitude, longitude);
-      this.getStringAddress(latitude, longitude);
+      this.syncData(latitude, longitude);
+    },
+    isRestaurantModalActive(status) {
+      if (!status) {
+        this.syncData(this.position.latitude, this.position.longitude);
+      }
+    },
+    isBottom(value) {
+      console.log(value, this.hasRemainData);
+      if (value && this.hasRemainData) {
+        const lastId = this.datas[this.datas.length - 1].id;
+        this.getRestaurants(
+          this.position.latitude,
+          this.position.longitude,
+          lastId
+        );
+      }
     },
   },
   data() {
@@ -153,6 +170,8 @@ export default {
     ...mapGetters({
       restaurants: "getRestaurants",
       position: "getUserPosition",
+      isRestaurantModalActive: "getIsRestaurantModalActive",
+      hasRemainData: "getHasRemainRestaurantData",
     }),
   },
   methods: {
@@ -162,15 +181,15 @@ export default {
     handleOpenCouponModal() {
       this.$store.commit("setIsCouponModalStatus", true);
     },
-    async getRestaurants(latitude, longitude) {
-      await this.$store.commit("setIsGlobalLoading", true);
+    async getRestaurants(latitude, longitude, nextIdx) {
       await this.$store.dispatch("syncRestaurants", {
         longitude: longitude,
         latitude: latitude,
+        size: 10,
+        id: nextIdx,
       });
 
       this.datas = this.restaurants;
-      await this.$store.commit("setIsGlobalLoading", false);
     },
     async getStringAddress(latitude, longitude) {
       const geocoder = new window.kakao.maps.services.Geocoder();
@@ -197,6 +216,12 @@ export default {
     },
     onSortBySelect(value) {
       this.datas = this.datas.sort((a, b) => a[value] - b[value]);
+    },
+    async syncData(latitude, longitude) {
+      await this.$store.commit("setIsGlobalLoading", true);
+      this.getRestaurants(latitude, longitude);
+      this.getStringAddress(latitude, longitude);
+      await this.$store.commit("setIsGlobalLoading", false);
     },
   },
 };

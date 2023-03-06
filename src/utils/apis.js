@@ -9,6 +9,12 @@ const http = axios.create();
 http.interceptors.response.use(
   function (response) {
     // 2xx 범위에 있는 상태 코드는 이 함수를 트리거
+    if ("authorization" in response.headers) {
+      window.localStorage.setItem(
+        "accessToken",
+        response.headers.authorization.slice(7)
+      );
+    }
 
     // 응답 데이터가 있는 작업 수행
     return response;
@@ -24,6 +30,8 @@ http.interceptors.response.use(
           });
           break;
         case 401:
+          window.localStorage.clear();
+          window.location.href = "/general/customer/login";
           break;
         default:
           return Promise.reject(error);
@@ -47,34 +55,37 @@ export const api = {
   },
   // get
   getRestaurants(params) {
-    return http.get("/restaurants", { params });
+    return http.get("/general/restaurants", { params });
   },
   getRestaurantBasicInfo(restaurantId) {
-    return http.get(`/restaurants/${restaurantId}`);
+    return http.get(`/customer/restaurants/${restaurantId}`);
   },
   getRestaurantDetailInfo(restaurantId) {
-    return http.get(`/restaurants/${restaurantId}/details`);
+    return http.get(`/customer/restaurants/${restaurantId}/details`);
   },
   getRestaurantMenus(restaurantId) {
-    return http.get(`/restaurants/${restaurantId}/menus`);
+    return http.get(`/customer/restaurants/${restaurantId}/menus`);
   },
   getRestaurantReviews(restaurantId) {
-    return http.get(`/restaurants/${restaurantId}/reviews`);
+    return http.get(`/customer/restaurants/${restaurantId}/reviews`);
   },
   getRestaurantEvents(restaurantId) {
-    return http.get(`/restaurants/${restaurantId}/events`);
+    return http.get(`/customer/restaurants/${restaurantId}/events`);
   },
   getGlobalEvents() {
-    return http.get("/events");
+    return http.get("/customer/events");
   },
   getRestaurantSearch(params) {
-    return http.get("/restaurants/search", { params });
+    return http.get("/general/restaurants/search", { params });
   },
-  getCustomerReviews() {
-    return http.get("/customer/reviews");
+  getCustomerReviews(params) {
+    return http.get("/customer/reviews", { params });
+  },
+  getWaitings(params) {
+    return http.get("/customer/lineup-records", { params });
   },
   getWaitingHistories(params) {
-    return http.get("/customer/lineup-records", { params });
+    return http.get("/customer/lineup-history-records", { params });
   },
   getCustomerDetailInfo() {
     return http.get("/customer/info");
@@ -95,33 +106,33 @@ export const api = {
     );
   },
   googleRedirect(params) {
-    return http.get("/google/callback", { params });
+    return http.get("/general/google/callback", { params });
   },
   // post
   postReview(restaurantId, payload) {
-    return http.post(`/restaurants/${restaurantId}/reviews`, payload, {
+    return http.post(`/customer/restaurants/${restaurantId}/reviews`, payload, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
   },
   postWaiting(restaurantId, payload) {
-    return http.post(`/restaurants/${restaurantId}/lineup`, payload);
+    return http.post(`/customer/restaurants/${restaurantId}/lineup`, payload);
   },
   postCoupon(creatorId) {
-    return http.post(`/coupons/creators/${creatorId}`);
+    return http.post(`/customer/coupons/creators/${creatorId}`);
   },
   login(payload) {
-    return http.post("/customer/signin", payload);
+    return http.post("/general/customer/signin", payload);
   },
   signup(payload) {
-    return http.post("/customer/signup", payload);
+    return http.post("/general/customer/signup", payload);
   },
   logout() {
     return http.post("/customer/signout");
   },
   findPassword(payload) {
-    return http.post("/customer/find-password", payload);
+    return http.post("/general/customer/find-password", payload);
   },
   // put
   updatePassword(payload) {
@@ -130,12 +141,12 @@ export const api = {
   // delete
   deleteReview(restaurantId, reviewId) {
     return http.delete(
-      `/restaurants/${restaurantId}/reviews/${reviewId}`,
+      `/customer/restaurants/${restaurantId}/reviews/${reviewId}`,
       payload
     );
   },
   deleteWaiting(lineupId) {
-    return http.delete(`/restaurants/lineup/${lineupId}`);
+    return http.delete(`/customer/restaurants/lineup/${lineupId}`);
   },
   deleteCustomer() {
     return http.delete(`/customer/withdraw`);

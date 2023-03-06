@@ -125,6 +125,9 @@ for (let i = 1; i <= DATA_COUNT; i++) {
 export default {
   name: "MyLineupList",
   components: { BackwardButton, UploadOutlined, Modal },
+  props: {
+    isBottom: false,
+  },
   methods: {
     dateFormatter,
     moveBackward() {
@@ -137,7 +140,7 @@ export default {
       reviewed,
       arrivedAt,
       type,
-      lineupId,
+      id: lineupId,
     }) {
       if (status != "ARRIVE") {
         Modal.error({
@@ -176,6 +179,7 @@ export default {
         return;
       }
       const imageList = this.formState.upload.map((cur) => cur.originFileObj);
+
       const payload = {
         type: this.reviewTarget.type,
         lineupId: this.reviewTarget.lineupId,
@@ -184,6 +188,7 @@ export default {
         images: imageList,
       };
 
+      console.log(this.reviewTarget);
       const token = localStorage.getItem("accessToken");
       if (!token) {
         return this.$router.replace("/login");
@@ -239,7 +244,7 @@ export default {
         type: "",
       };
     },
-    async syncData() {
+    async syncData(id) {
       const token = window.localStorage.getItem("accessToken");
       if (!token) {
         Modal.warn({
@@ -250,17 +255,34 @@ export default {
         return;
       }
       api.default.setHeadersAuthorization(token);
-      await this.$store.dispatch("syncUserWaitings");
-      this.datas = this.userWaitings.sort((a, b) => b.lineupId - a.lineupId);
+      const payload = {
+        size: 10,
+        lastId: id,
+      };
+      await this.$store.dispatch("syncUserWaitingHistories", payload);
+      this.datas = this.userWaitingHistories.sort(
+        (a, b) => b.lineupId - a.lineupId
+      );
     },
   },
   computed: {
     ...mapGetters({
-      userWaitings: "getUserWaitings",
+      userWaitingHistories: "getUserWaitingHistories",
+      hasRemainData: "getHasRemainWaitingHistories",
     }),
   },
   async created() {
+    this.$store.dispatch("initWaitings");
     this.syncData();
+  },
+  watch: {
+    isBottom(value) {
+      console.log(value, this.hasRemainData);
+      if (value && this.hasRemainData) {
+        const lastId = this.datas[this.datas.length - 1].id;
+        this.syncData(lastId);
+      }
+    },
   },
   data() {
     return {
@@ -287,6 +309,18 @@ export default {
 };
 </script>
 <style lang="scss">
+.ant-upload-list-picture .ant-upload-list-item-error,
+.ant-upload-list-picture-card .ant-upload-list-item-error {
+  border-color: rgb(109, 158, 54);
+  color: rgb(109, 158, 54);
+}
+
+.ant-upload-list-item-error .ant-upload-list-item-card-actions .anticon,
+.ant-upload-list-item-error,
+.ant-upload-list-item-error .ant-upload-text-icon > .anticon,
+.ant-upload-list-item-error .ant-upload-list-item-name {
+  color: rgb(109, 158, 54);
+}
 .nav-wrapper {
   position: sticky;
   top: 0;

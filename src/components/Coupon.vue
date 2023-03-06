@@ -1,10 +1,13 @@
 <template lang="">
   <div
     class="coupon-wrapper"
-    @click="handleClick"
+    @click="handleSelect"
     :style="{ cursor: isDownloadable ? 'pointer' : 'auto' }"
   >
-    <span v-if="isDownloadable"><vertical-align-bottom-outlined /></span>
+    <span>레스토랑 이름</span>
+    <span class="down-button" v-if="isDownloadable"
+      ><vertical-align-bottom-outlined
+    /></span>
     <h1>{{ data.name }}</h1>
     <p>
       <strong
@@ -43,12 +46,11 @@ export default {
   },
   methods: {
     dateFormatter,
-    handleClick() {
-      if (!this.isDownloadable) {
-        return;
-      }
-
-      this.$emit("download", this.data.id);
+    handleDownloadSelect() {
+      this.$emit("click", {
+        is: this.data.id,
+        name: "가게이름",
+      });
     },
   },
 };
@@ -62,6 +64,9 @@ export default {
   box-shadow: 1px 1px 3px 1px #dadce0;
   & > * {
     margin: 0;
+  }
+  .down-button {
+    margin-left: 5px;
   }
 
   p {

@@ -24,8 +24,6 @@ export default {
               email: email,
             });
             if ("authorization" in headers) {
-              const accessToken = await headers.authorization.slice(7);
-              localStorage.setItem("accessToken", accessToken);
               this.$router.replace("/");
               return;
             } else {
