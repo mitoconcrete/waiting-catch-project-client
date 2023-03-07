@@ -237,7 +237,11 @@ export default {
       );
     },
     onSortBySelect(value) {
-      this.datas = this.datas.sort((a, b) => a[value] - b[value]);
+      if (value == "rate") {
+        this.datas = this.datas.sort((a, b) => b[value] - a[value]);
+      } else {
+        this.datas = this.datas.sort((a, b) => a[value] - b[value]);
+      }
     },
     async syncData(latitude, longitude) {
       // await this.$store.commit("setIsGlobalLoading", true);
