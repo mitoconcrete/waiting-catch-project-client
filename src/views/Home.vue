@@ -57,6 +57,7 @@
   background-color: #fff;
   z-index: 999;
   button:first-child {
+    overflow: hidden;
     flex: 1;
     margin-right: 10px;
     display: flex;
@@ -71,10 +72,14 @@
       background-image: url("/icon/map.png");
       background-size: contain;
       margin-right: 5px;
+      background-repeat: no-repeat;
     }
 
     strong {
       margin: auto 0;
+      width: 100%;
+      text-overflow: hidden;
+      text-align: left;
     }
   }
 
@@ -161,7 +166,6 @@ export default {
       this.syncData(latitude, longitude);
     },
     isRestaurantModalActive(status) {
-      console.log(status);
       if (!status) {
         setTimeout(async () => {
           this.$store.dispatch("initRestaurants");
@@ -212,6 +216,7 @@ export default {
       });
 
       this.datas = this.restaurants;
+      await this.$store.commit("setIsGlobalLoading", false);
     },
     async getStringAddress(latitude, longitude) {
       const geocoder = new window.kakao.maps.services.Geocoder();
@@ -244,10 +249,9 @@ export default {
       }
     },
     async syncData(latitude, longitude) {
-      // await this.$store.commit("setIsGlobalLoading", true);
+      await this.$store.commit("setIsGlobalLoading", true);
       this.getRestaurants(latitude, longitude);
       this.getStringAddress(latitude, longitude);
-      // await this.$store.commit("setIsGlobalLoading", false);
     },
   },
 };

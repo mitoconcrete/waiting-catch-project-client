@@ -31,7 +31,7 @@ http.interceptors.response.use(
           break;
         case 401:
           window.localStorage.clear();
-          window.location.href = "/general/customer/login";
+          window.location.href = "/login";
           break;
         default:
           return Promise.reject(error);
@@ -74,8 +74,8 @@ export const api = {
   getRestaurantEvents({ restaurantId, params }) {
     return http.get(`/customer/restaurants/${restaurantId}/events`, { params });
   },
-  getGlobalEvents() {
-    return http.get("/customer/events");
+  getGlobalEvents(params) {
+    return http.get("/customer/events", { params });
   },
   getRestaurantSearch(params) {
     return http.get("/general/restaurants/search", { params });
@@ -123,6 +123,9 @@ export const api = {
   },
   postCoupon(creatorId) {
     return http.post(`/customer/coupons/creators/${creatorId}`);
+  },
+  putCoupon(couponId) {
+    return http.put(`/customer/coupons/${couponId}`);
   },
   login(payload) {
     return http.post("/general/customer/signin", payload);

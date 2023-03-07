@@ -112,7 +112,9 @@ export default {
   watch: {
     isBottom(value) {
       if (value && this.hasRemainData) {
-        const lastId = this.datas[this.datas.length - 1].id;
+        const lastId = this.datas[this.datas.length - 1]
+          ? this.datas[this.datas.length - 1].id
+          : null;
         this.syncData(this.searchKeyword, lastId);
       }
     },
@@ -143,6 +145,9 @@ export default {
       }
     },
     async syncData(keyword, lastId) {
+      if (!keyword) {
+        return;
+      }
       await this.$store.dispatch("syncRestaurantsByKeywords", {
         latitude: this.userPosition.latitude,
         longitude: this.userPosition.longitude,

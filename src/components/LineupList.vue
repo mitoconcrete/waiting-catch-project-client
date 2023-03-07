@@ -154,7 +154,7 @@ export default {
         images: imageList,
       };
 
-      console.log(this.reviewTarget);
+      //   console.log(this.reviewTarget);
       const token = localStorage.getItem("accessToken");
       if (!token) {
         return this.$router.replace("/login");
@@ -178,7 +178,6 @@ export default {
           content: "리뷰를 성공적으로 업데이트 했습니다.",
         });
         this.resetValue();
-        this.$emit("sync");
         this.isModalVisible = false;
       } catch (e) {
         Modal.error({

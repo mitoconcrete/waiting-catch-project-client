@@ -3,7 +3,7 @@
     <section class="nav-wrapper">
       <BackwardButton @click="moveBackward" message="나의 줄서기 내역" />
     </section>
-    <LineupList :datas="datas" @sync="reSyncData" @inactive="handleInActive" />
+    <LineupList :datas="datas" @inactive="handleInActive" />
   </div>
 </template>
 <script>
@@ -86,7 +86,7 @@ export default {
   },
   watch: {
     isBottom(value) {
-      console.log(value, this.hasRemainData);
+      // console.log(value, this.hasRemainData);
       if (value && this.hasRemainData) {
         const lastId = this.datas[this.datas.length - 1].id;
         this.syncData(lastId);

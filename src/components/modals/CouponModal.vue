@@ -7,12 +7,12 @@
   </a-modal>
   <section class="modal-wrapper">
     <BackwordButton @click="moveBackward" message="쿠폰" />
-    <a-tabs v-model:activeKey="activeKey">
+    <a-tabs
+      v-model:activeKey="activeKey"
+      @scroll="handleNotificationListScroll"
+    >
       <a-tab-pane key="1" tab="현재 보유 쿠폰" style="height: 200px"
-        ><CouponList
-          :datas="mycoupons"
-          :is-downloadable="false"
-          @click="selectCoupon"
+        ><CouponList :datas="myCoupons" :is-downloadable="false"
       /></a-tab-pane>
       <a-tab-pane key="2" tab="다운 가능 쿠폰" force-render>
         <EventList :datas="events" />
@@ -85,24 +85,26 @@ export default {
       mycoupons: MOCK_DATA_1,
       events: MOCK_DATA_2,
       isCheckCoupon: false,
+      page: 0,
     };
   },
   computed: {
     ...mapGetters({
       myCoupons: "getMyCoupons",
       globalEvents: "getGlobalEvents",
+      hasRemainEvents: "getHasRemainGlobalEvents",
     }),
   },
   watch: {
     activeKey: {
       immediate: true,
       handler: async function (tab) {
+        this.page = 0;
         if (tab === "1") {
           await this.$store.dispatch("syncMyCoupons");
-          this.mycoupons = this.myCoupons;
         } else {
-          await this.$store.dispatch("syncGlobalEvents");
-          this.events = this.globalEvents;
+          this.$store.dispatch("initGlobalEvents");
+          this.syncGlobalEvents();
         }
       },
     },
@@ -113,9 +115,38 @@ export default {
       this.$store.commit("setIsCouponModalStatus", false);
     },
     handleUseCoupon() {
-      console.log("?");
+      // console.log("?");
     },
-    selectCoupon() {},
+    handleNotificationListScroll(e) {
+      const { scrollHeight, scrollTop, clientHeight } = e.target;
+      const isAtTheBottom =
+        scrollHeight <= Math.round(scrollTop + clientHeight);
+      // console.log(scrollHeight, Math.round(scrollTop + clientHeight));
+      // 일정 이상 밑으로 내려오면 함수 실행 / 반복된 호출을 막기위해 1초마다 스크롤 감지 후 실행
+      if (isAtTheBottom) {
+        setTimeout(() => this.handleLoadMore(), 1000);
+      } else {
+        this.isScrollBottom = false;
+      }
+    },
+    async syncGlobalEvents(page = 0) {
+      const params = {
+        size: 5,
+        page: page,
+      };
+      await this.$store.dispatch("syncGlobalEvents", params);
+      this.events = this.globalEvents;
+    },
+    handleLoadMore() {
+      if (this.activeKey === "1") {
+        return;
+      } else {
+        this.page += 1;
+        if (this.hasRemainEvents) {
+          this.syncGlobalEvents(this.page);
+        }
+      }
+    },
   },
 };
 </script>

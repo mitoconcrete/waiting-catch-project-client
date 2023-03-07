@@ -4,7 +4,15 @@
     @click="handleSelect"
     :style="{ cursor: isDownloadable ? 'pointer' : 'auto' }"
   >
-    <span>레스토랑 이름</span>
+    <span>{{
+      data.restaurantName
+        ? `[${
+            data.restaurantName.length > 3
+              ? data.restaurantName.slice(0, 3) + "..."
+              : data.restaurantName
+          } 전용]`
+        : "[전체 사용]"
+    }}</span>
     <span class="down-button" v-if="isDownloadable"
       ><vertical-align-bottom-outlined
     /></span>
@@ -46,10 +54,10 @@ export default {
   },
   methods: {
     dateFormatter,
-    handleDownloadSelect() {
-      this.$emit("click", {
-        is: this.data.id,
-        name: "가게이름",
+    handleSelect() {
+      this.$emit("select", {
+        id: this.data.id,
+        name: this.data.restaurantName,
       });
     },
   },

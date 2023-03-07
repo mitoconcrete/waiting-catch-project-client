@@ -2,6 +2,7 @@ import { api } from "@/utils/apis";
 const state = {
   globalEvents: [],
   myCoupons: [],
+  hasRemainGlobalEvents: false,
 };
 
 const mutations = {
@@ -9,7 +10,16 @@ const mutations = {
     state.myCoupons = status;
   },
   setGlobalEvents(state, status) {
-    state.globalEvents = status;
+    state.globalEvents = [...state.globalEvents, ...status];
+  },
+  setHasRemainGlobalEvents(state, status) {
+    state.hasRemainGlobalEvents = status;
+  },
+  initGlobalEvents(state) {
+    state.globalEvents = [];
+  },
+  initMyCoupons(state) {
+    state.myCoupons = [];
   },
 };
 
@@ -19,6 +29,9 @@ const getters = {
   },
   getGlobalEvents(state) {
     return state.globalEvents;
+  },
+  getHasRemainGlobalEvents(state) {
+    return state.hasRemainGlobalEvents;
   },
 };
 
@@ -31,14 +44,15 @@ const actions = {
     api.default.setHeadersAuthorization(token);
   },
 
-  async syncGlobalEvents({ commit }) {
+  async syncGlobalEvents({ commit }, params) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return;
     }
     api.default.setHeadersAuthorization(token);
-    const { data } = await api.getGlobalEvents();
-    commit("setGlobalEvents", data);
+    const { data } = await api.getGlobalEvents(params);
+    commit("setGlobalEvents", data.data.content);
+    commit("setHasRemainGlobalEvents", !data.data.last);
   },
 
   async syncMyCoupons({ commit }) {
@@ -48,7 +62,7 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getCustomerCoupons();
-    commit("setMyCoupons", data);
+    commit("setMyCoupons", data.data);
   },
 
   async downloadCoupon({ commit }, payload) {
@@ -58,6 +72,12 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     await api.postCoupon(payload);
+  },
+  initGlobalEvents({ commit }) {
+    commit("initGlobalEvents");
+  },
+  initMyCoupons({ commit }) {
+    commit("initMyCoupons");
   },
 };
 
