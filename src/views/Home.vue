@@ -4,6 +4,7 @@
       <div></div>
       <strong>{{ position.stringAddress }}</strong>
     </button>
+    <button @click="handleOpenLineupModal" class="lineup-modal-button"></button>
     <button @click="handleOpenCouponModal"></button>
   </header>
   <section class="home-page page-wrapper">
@@ -77,6 +78,18 @@
     }
   }
 
+  .lineup-modal-button {
+    margin: auto;
+    margin-right: 10px;
+    width: 25px;
+    height: 25px;
+    border: none;
+    background-color: inherit;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("/icon/bell.png");
+  }
+
   button:last-child {
     margin: auto;
     width: 25px;
@@ -92,6 +105,7 @@
 
 <script>
 import RestaurantList from "@/components/RestaurantList.vue";
+import { TeamOutlined } from "@ant-design/icons-vue";
 import { mapGetters } from "vuex";
 const DATA_COUNT = 0;
 const MOCK_DATA = [];
@@ -122,6 +136,7 @@ export default {
   name: "home",
   components: {
     RestaurantList,
+    TeamOutlined,
   },
   async mounted() {
     this.$store.dispatch("initRestaurants");
@@ -142,15 +157,19 @@ export default {
   },
   watch: {
     async position({ latitude, longitude }) {
+      this.$store.dispatch("initRestaurants");
       this.syncData(latitude, longitude);
     },
     isRestaurantModalActive(status) {
+      console.log(status);
       if (!status) {
-        this.syncData(this.position.latitude, this.position.longitude);
+        setTimeout(async () => {
+          this.$store.dispatch("initRestaurants");
+          await this.syncData(this.position.latitude, this.position.longitude);
+        }, 500);
       }
     },
     isBottom(value) {
-      console.log(value, this.hasRemainData);
       if (value && this.hasRemainData) {
         const lastId = this.datas[this.datas.length - 1].id;
         this.getRestaurants(
@@ -180,6 +199,9 @@ export default {
     },
     handleOpenCouponModal() {
       this.$store.commit("setIsCouponModalStatus", true);
+    },
+    handleOpenLineupModal() {
+      this.$store.commit("setIsLineupModalStatus", true);
     },
     async getRestaurants(latitude, longitude, nextIdx) {
       await this.$store.dispatch("syncRestaurants", {
@@ -218,10 +240,10 @@ export default {
       this.datas = this.datas.sort((a, b) => a[value] - b[value]);
     },
     async syncData(latitude, longitude) {
-      await this.$store.commit("setIsGlobalLoading", true);
+      // await this.$store.commit("setIsGlobalLoading", true);
       this.getRestaurants(latitude, longitude);
       this.getStringAddress(latitude, longitude);
-      await this.$store.commit("setIsGlobalLoading", false);
+      // await this.$store.commit("setIsGlobalLoading", false);
     },
   },
 };

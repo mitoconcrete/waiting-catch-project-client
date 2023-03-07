@@ -111,7 +111,6 @@ export default {
   },
   watch: {
     isBottom(value) {
-      console.log(value, this.hasRemainData);
       if (value && this.hasRemainData) {
         const lastId = this.datas[this.datas.length - 1].id;
         this.syncData(this.searchKeyword, lastId);

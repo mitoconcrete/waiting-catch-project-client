@@ -1,4 +1,5 @@
 import { api } from "@/utils/apis";
+import { da } from "date-fns/locale";
 
 const state = {
   user: {
@@ -152,7 +153,6 @@ const actions = {
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getCustomerReviews(params);
-    console.log(data);
     commit("setUserReviews", data.data.content);
     commit("setHasRemainReviews", !data.data.last);
   },
@@ -162,7 +162,9 @@ const actions = {
       return (window.location.href = "/login");
     }
     api.default.setHeadersAuthorization(token);
-    const { data } = await api.getWaitings(payload);
+    const { data } = payload
+      ? await api.getWaitings(payload)
+      : await api.getWaitings();
     commit("setUserWaitings", data.data);
   },
   async syncUserWaitingHistories({ commit }, payload) {
