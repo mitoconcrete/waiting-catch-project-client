@@ -144,6 +144,7 @@ export default {
     async onFinish() {
       api.default.deleteHeadersAuthorization();
       await api.login(this.formState);
+      this.$router.replace("/");
     },
     onFinishFailed() {},
     moveBackward() {

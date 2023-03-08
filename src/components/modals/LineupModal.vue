@@ -10,12 +10,22 @@
 import BackwordButton from "../BackwardButton.vue";
 import { mapGetters } from "vuex";
 import LineupList from "@/components/LineupList.vue";
+import { Modal } from "ant-design-vue";
 export default {
   components: {
     BackwordButton,
     LineupList,
   },
   async created() {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      Modal.warn({
+        title: "로그인 요청",
+        content: "로그인 이후 이용가능합니다.",
+      });
+      this.$store.commit("setIsLineupModalStatus", false);
+      return;
+    }
     await this.$store.dispatch("initWaitings");
     await this.syncData();
   },

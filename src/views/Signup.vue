@@ -12,7 +12,7 @@
     >
       <a-form-item
         name="username"
-        :rules="[{ required: true, message: 'Please input your username!' }]"
+        :rules="[{ required: true, validator: validator.username }]"
       >
         <a-input
           v-model:value="formState.username"
@@ -22,7 +22,7 @@
       </a-form-item>
       <a-form-item
         name="password"
-        :rules="[{ required: true, message: 'Please input your password!' }]"
+        :rules="[{ required: true, validator: validator.password }]"
       >
         <a-input-password
           placeholder="패스워드를 입력하세요."
@@ -32,7 +32,7 @@
       </a-form-item>
       <a-form-item
         name="name"
-        :rules="[{ required: true, message: 'Please input your name!' }]"
+        :rules="[{ required: true, validator: validator.name }]"
       >
         <a-input
           placeholder="성함을 입력해주세요."
@@ -42,7 +42,7 @@
       </a-form-item>
       <a-form-item
         name="email"
-        :rules="[{ required: true, message: 'Please input your email!' }]"
+        :rules="[{ required: true, validator: validator.email }]"
       >
         <a-input
           placeholder="이메일을 입력해주세요."
@@ -53,7 +53,7 @@
       </a-form-item>
       <a-form-item
         name="nickname"
-        :rules="[{ required: true, message: 'Please input your nickname!' }]"
+        :rules="[{ required: true, validator: validator.nickname }]"
       >
         <a-input
           placeholder="닉네임을 입력해주세요."
@@ -63,12 +63,13 @@
       </a-form-item>
       <a-form-item
         name="phoneNumber"
-        :rules="[{ required: true, message: 'Please input your phonenumber!' }]"
+        :rules="[{ required: true, validator: validator.phoneNumber }]"
       >
         <a-input
           placeholder="전화번호을 입력해주세요."
           size="large"
-          v-model:value="formState.phoneNumber"
+          :value="formState.phoneNumber"
+          @change="onInputPhoneNumber"
         />
       </a-form-item>
       <a-form-item style="text-align: right">
@@ -116,6 +117,14 @@ export default {
         name: "",
         phoneNumber: "",
       },
+      validator: {
+        username: this.usernameValidator,
+        password: this.passwordValidator,
+        name: this.nameValidator,
+        email: this.emailValidator,
+        nickname: this.nicknameValidator,
+        phoneNumber: this.phoneNumberValidator,
+      },
       isEmailFieldDisabled: false,
     };
   },
@@ -129,6 +138,7 @@ export default {
             username: this.formState.username,
             password: this.formState.password,
           });
+          this.$router.replace("/");
         } catch (e) {
           throw new Error(e);
         }
@@ -136,9 +146,126 @@ export default {
         throw new Error(e);
       }
     },
-    onFinishFailed() {},
+    onInputPhoneNumber(e) {
+      let str = e.target.value.replaceAll("-", "").replace(/[^0-9]/, "");
+      let phone = "";
+      if (str.length < 4) {
+        phone = str;
+      } else if (str.length < 9) {
+        phone += str.slice(0, parseInt(str.length / 2));
+        phone += "-";
+        phone += str.slice(parseInt(str.length / 2));
+      } else if (str.length < 10) {
+        phone += str.slice(0, 2);
+        phone += "-";
+        phone += str.slice(2, 2 + parseInt(str.slice(2).length / 2));
+        phone += "-";
+        phone += str.slice(2 + parseInt(str.slice(2).length / 2));
+      } else if (str.length < 11) {
+        phone += str.slice(0, 3);
+        phone += "-";
+        phone += str.slice(3, 3 + parseInt(str.slice(2).length / 2));
+        phone += "-";
+        phone += str.slice(3 + parseInt(str.slice(2).length / 2));
+      } else {
+        phone += str.slice(0, 3);
+        phone += "-";
+        phone += str.slice(3, 3 + parseInt(str.slice(2).length / 2));
+        phone += "-";
+        phone += str.slice(3 + parseInt(str.slice(2).length / 2));
+      }
+      this.formState.phoneNumber = phone;
+    },
     moveBackward() {
       this.$router.push("/login");
+    },
+    usernameValidator(rule, value) {
+      if (!value) {
+        return Promise.reject("아이디를 입력해주세요.");
+      }
+      if (value.length < 4) {
+        return Promise.reject("아이디는 4글자 이상이어야 합니다.");
+      }
+      if (value.length > 15) {
+        return Promise.reject("아이디는 16글자 미만이어야 합니다.");
+      }
+
+      if (!value.match(/^(?=.*[a-zA-Z0-9])[a-zA-Z0-9]{4,15}$/g)) {
+        return Promise.reject(
+          "하나 이상의 알파벳 소문자와 숫자로 이뤄져야 합니다."
+        );
+      }
+
+      return Promise.resolve();
+    },
+    passwordValidator(rule, value) {
+      if (!value) {
+        return Promise.reject("패스워드를 입력해주세요.");
+      }
+      if (value.length < 8) {
+        return Promise.reject("아이디는 8글자 이상이어야 합니다.");
+      }
+      if (value.length > 15) {
+        return Promise.reject("아이디는 16글자 미만이어야 합니다.");
+      }
+
+      if (
+        !value.match(
+          /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@!%*#?&\-])[A-Za-z0-9$@!%*#?&]{8,15}$/g
+        )
+      ) {
+        return Promise.reject(
+          "하나 이상의 알파벳, 숫자, 특수문자의 조합으로 이뤄져야 합니다."
+        );
+      }
+
+      return Promise.resolve();
+    },
+    nameValidator(rule, value) {
+      if (!value) {
+        return Promise.reject("이름를 입력해주세요.");
+      }
+      if (value.length < 2) {
+        return Promise.reject("이름은 2글자 이상이어야 합니다.");
+      }
+      if (value.length > 5) {
+        return Promise.reject("이름은 6글자 미만이어야 합니다.");
+      }
+
+      return Promise.resolve();
+    },
+    emailValidator(rule, value) {
+      if (!value) {
+        return Promise.reject("이메일을 입력해주세요.");
+      }
+      if (!value.match(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$/g)) {
+        return Promise.reject("올바른 형식을 입력해주세요.");
+      }
+      return Promise.resolve();
+    },
+    nicknameValidator(rule, value) {
+      if (!value) {
+        return Promise.reject("닉네임을 입력해주세요.");
+      }
+      if (value.length < 4) {
+        return Promise.reject("닉네임은 4글자 이상이어야 합니다.");
+      }
+      if (value.length > 11) {
+        return Promise.reject("닉네임은 11글자 미만이어야 합니다.");
+      }
+      return Promise.resolve();
+    },
+    phoneNumberValidator(rule, value) {
+      if (!value) {
+        return Promise.reject("전화번호를 입력해주세요.");
+      }
+      if (value.length < 4) {
+        return Promise.reject("전화번호는 4글자 이상이어야 합니다.");
+      }
+      if (!value.match(/^(0[0-99]{1,2})-?([0-9]{3,4})-?([0-9]{4})$/g)) {
+        return Promise.reject("올바른 형식을 입력해주세요.");
+      }
+      return Promise.resolve();
     },
   },
 };

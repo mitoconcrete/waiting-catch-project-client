@@ -25,12 +25,12 @@
       <section class="description-section" v-if="directionType === 'row'">
         <span class="sub-info">{{ data.category[0] }}</span>
         <h3>{{ data.name }}</h3>
-        <a-rate :value="data.rate" />
+        <a-rate :value="data.rate" disabled />
         <span class="sub-info">{{ data.distance.toFixed(2) }}km</span>
       </section>
       <section class="description-section" v-else>
         <h3>{{ data.name }}</h3>
-        <a-rate :value="data.rate" />
+        <a-rate :value="data.rate" disabled />
         <span class="sub-info"
           >{{ data.category[0] }} {{ data.distance.toFixed(2) }}km</span
         >

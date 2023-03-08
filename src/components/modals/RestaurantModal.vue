@@ -30,7 +30,7 @@
         <div>
           <h1>{{ restaurantBasic.name }}</h1>
           <h3>{{ restaurantDetail.description }}</h3>
-          <a-rate :value="restaurantDetail.rate" />
+          <a-rate :value="restaurantDetail.rate" disabled />
         </div>
         <div>
           <section class="details">

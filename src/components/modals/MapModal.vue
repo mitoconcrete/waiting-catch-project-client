@@ -32,19 +32,51 @@ export default {
     this.kakao = window.kakao;
     // initial position set
     this.$store.commit("setIsGlobalLoading", true);
-    navigator.geolocation.getCurrentPosition(async ({ coords }) => {
-      const { latitude, longitude } = coords;
-      this.latitude = latitude;
-      this.longitude = longitude;
-      this.map = await this.drawMap(latitude, longitude);
-      await this.setAdressFromPosition(latitude, longitude);
-      this.marker = await this.drawMarker(latitude, longitude);
-      this.$store.commit("setIsGlobalLoading", false);
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const { latitude, longitude } = coords;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.map = await this.drawMap(latitude, longitude);
+        await this.setAdressFromPosition(latitude, longitude);
+        this.marker = await this.drawMarker(latitude, longitude);
+        this.$store.commit("setIsGlobalLoading", false);
 
-      if (this.map && this.marker) {
-        this.kakao.maps.event.addListener(this.map, "click", this.clickMarker);
+        if (this.map && this.marker) {
+          this.kakao.maps.event.addListener(
+            this.map,
+            "click",
+            this.clickMarker
+          );
+        }
+      },
+      async () => {
+        this.$store.commit("setIsGlobalLoading", false);
+        this.$store.dispatch("syncUserPosition", {
+          latitude: 37.5666805,
+          longitude: 126.9784147,
+        });
+        this.latitude = 37.5666805;
+        this.longitude = 126.9784147;
+        this.map = await this.drawMap(this.latitude, this.longitude);
+        await this.setAdressFromPosition(this.latitude, this.longitude);
+        this.marker = await this.drawMarker(this.latitude, this.longitude);
+        this.$store.commit("setIsGlobalLoading", false);
+
+        if (this.map && this.marker) {
+          this.kakao.maps.event.addListener(
+            this.map,
+            "click",
+            this.clickMarker
+          );
+        }
+        Modal.warn({
+          title: "위치 권한 허용 요청",
+          content:
+            "저희 서비스는 위치 권한을 허용해야 원활한 이용이 가능합니다. 위치 권한을 허용해주세요.",
+        });
       }
-    });
+    );
   },
   methods: {
     drawMap(lat, long) {

@@ -3,7 +3,7 @@
     <li v-for="data in datas" class="review">
       <h1>{{ data.restaurantName }}</h1>
       <h3>{{ data.content }}</h3>
-      <a-rate :value="data.rate" />
+      <a-rate :value="data.rate" disabled />
       <div v-if="data.imagePaths.length">
         <a-image
           v-for="image in data.imagePaths"
