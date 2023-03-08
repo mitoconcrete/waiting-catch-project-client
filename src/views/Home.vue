@@ -145,6 +145,7 @@ export default {
     TeamOutlined,
   },
   async mounted() {
+    await this.$store.commit("setIsGlobalLoading", true);
     this.$store.dispatch("initRestaurants");
     if (this.position.latitude == -1 && this.position.longitude == -1) {
       navigator.geolocation.getCurrentPosition(

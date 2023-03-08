@@ -7,6 +7,8 @@ const state = {
   events: [],
   reviews: [],
   alreadyCallRestaurants: [],
+  alreadyCallReviews: [],
+  alreadyCallEvents: [],
   hasRemainReviewData: false,
   hasRemainEventData: false,
   hasRemainRestaurantData: false,
@@ -45,9 +47,11 @@ const mutations = {
     state.hasRemainEventData = status;
   },
   initReviews(state) {
+    state.alreadyCallReviews = [];
     state.reviews = [];
   },
   initEvents(state) {
+    state.alreadyCallEvents = [];
     state.events = [];
   },
 };
@@ -94,11 +98,10 @@ const actions = {
     commit("setRestaurants", data.data.content);
   },
   async syncRestaurantsByKeywords({ commit }, params) {
-    // const token = window.localStorage.getItem("accessToken");
-    // if (!token) {
-    //   return;
-    // }
-    // api.default.setHeadersAuthorization(token);
+    if (params.id in state.alreadyCallRestaurants) {
+      return;
+    }
+    state.alreadyCallRestaurants.push(params.id);
     const { data } = await api.getRestaurantSearch(params);
     commit("setHasRemainRestaurantData", !data.data.last);
     commit("setRestaurants", data.data.content);
@@ -130,21 +133,30 @@ const actions = {
     const { data } = await api.getRestaurantMenus(restaurantId);
     commit("setRestaurantMenus", data.data);
   },
-  async syncRestaurantReviews({ commit }, payload) {
+  async syncRestaurantReviews({ commit, state }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return (window.location.href = "/login");
     }
+
+    if (payload.lastId in state.alreadyCallReviews) {
+      return;
+    }
+    state.alreadyCallReviews.push(payload.lastId);
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantReviews(payload);
     commit("setRestaurantReviews", data.data.content);
     commit("setHasRemainReviewData", !data.data.last);
   },
-  async syncRestaurantEvents({ commit }, payload) {
+  async syncRestaurantEvents({ commit, state }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return (window.location.href = "/login");
     }
+    if (payload.page in state.alreadyCallEvents) {
+      return;
+    }
+    state.alreadyCallEvents.push(payload.page);
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantEvents(payload);
     commit("setRestaurantEvents", data.data.content);

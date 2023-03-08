@@ -1,5 +1,4 @@
 import { api } from "@/utils/apis";
-import { da } from "date-fns/locale";
 
 const state = {
   user: {
@@ -21,8 +20,11 @@ const state = {
   },
   reviews: [],
   waitings: [],
+  alreadyCallReviews: [],
+  alreadyCallWaiting: [],
   hasRemainReviews: false,
   hasRemainWaitingHistories: false,
+  allowPositionSetting: false,
 };
 
 const mutations = {
@@ -53,10 +55,15 @@ const mutations = {
   setHasRemainReviews(state, status) {
     state.hasRemainReviews = status;
   },
+  setAllowPositionSetting(state, status) {
+    state.allowPositionSetting = status;
+  },
   initReviews(state) {
+    state.alreadyCallReviews = [];
     state.reviews = [];
   },
   initWaitings(state) {
+    state.alreadyCallWaiting = [];
     state.waitings = [];
   },
 };
@@ -76,6 +83,9 @@ const getters = {
   },
   getUserWaitings(state) {
     return state.waitings;
+  },
+  getAllowPositionSetting(state) {
+    return state.allowPositionSetting;
   },
   getHasRemainWaitingHistories(state) {
     return state.hasRemainWaitingHistories;
@@ -146,11 +156,15 @@ const actions = {
     });
     window.localStorage.removeItem("accessToken");
   },
-  async syncUserReviews({ commit }, params) {
+  async syncUserReviews({ commit, state }, params) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return (window.location.href = "/login");
     }
+    if (params.lastId in state.alreadyCallReviews) {
+      return;
+    }
+    state.alreadyCallReviews.push(params.lastId);
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getCustomerReviews(params);
     commit("setUserReviews", data.data.content);
@@ -167,11 +181,15 @@ const actions = {
       : await api.getWaitings();
     commit("setUserWaitings", data.data);
   },
-  async syncUserWaitingHistories({ commit }, payload) {
+  async syncUserWaitingHistories({ commit, state }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return (window.location.href = "/login");
     }
+    if (payload.lastId in state.alreadyCallWaiting) {
+      return;
+    }
+    state.alreadyCallWaiting.push(payload.lastId);
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getWaitingHistories(payload);
     commit("setUserWaitingHistories", data.data.content);

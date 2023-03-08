@@ -3,6 +3,8 @@ const state = {
   globalEvents: [],
   myCoupons: [],
   hasRemainGlobalEvents: false,
+  alreadyCallCoupon: [],
+  alreadyCallEvent: [],
 };
 
 const mutations = {
@@ -16,9 +18,11 @@ const mutations = {
     state.hasRemainGlobalEvents = status;
   },
   initGlobalEvents(state) {
+    state.alreadyCallEvent = [];
     state.globalEvents = [];
   },
   initMyCoupons(state) {
+    state.alreadyCallCoupon = [];
     state.myCoupons = [];
   },
 };
@@ -44,11 +48,15 @@ const actions = {
     api.default.setHeadersAuthorization(token);
   },
 
-  async syncGlobalEvents({ commit }, params) {
+  async syncGlobalEvents({ commit, state }, params) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
       return;
     }
+    if (params.page in state.alreadyCallEvent) {
+      return;
+    }
+    state.alreadyCallEvent.push(params.page);
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getGlobalEvents(params);
     commit("setGlobalEvents", data.data.content);
