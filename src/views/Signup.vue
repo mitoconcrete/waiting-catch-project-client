@@ -203,10 +203,10 @@ export default {
         return Promise.reject("패스워드를 입력해주세요.");
       }
       if (value.length < 8) {
-        return Promise.reject("아이디는 8글자 이상이어야 합니다.");
+        return Promise.reject("패스워드는 8글자 이상이어야 합니다.");
       }
       if (value.length > 15) {
-        return Promise.reject("아이디는 16글자 미만이어야 합니다.");
+        return Promise.reject("패스워드는 16글자 미만이어야 합니다.");
       }
 
       if (

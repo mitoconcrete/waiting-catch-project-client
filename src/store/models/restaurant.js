@@ -6,6 +6,7 @@ const state = {
   menus: [],
   events: [],
   reviews: [],
+  alreadyCallRestaurants: [],
   hasRemainReviewData: false,
   hasRemainEventData: false,
   hasRemainRestaurantData: false,
@@ -13,6 +14,7 @@ const state = {
 
 const mutations = {
   initRestaurants(state) {
+    state.alreadyCallRestaurants = [];
     state.restaurants = [];
   },
   setRestaurants(state, status) {
@@ -81,12 +83,11 @@ const getters = {
 };
 
 const actions = {
-  async syncRestaurants({ commit }, params) {
-    // const token = window.localStorage.getItem("accessToken");
-    // if (!token) {
-    //   return;
-    // }
-    // api.default.setHeadersAuthorization(token);
+  async syncRestaurants({ commit, state }, params) {
+    if (params.id in state.alreadyCallRestaurants) {
+      return;
+    }
+    state.alreadyCallRestaurants.push(params.id);
     api.default.deleteHeadersAuthorization();
     const { data } = await api.getRestaurants(params);
     commit("setHasRemainRestaurantData", !data.data.last);
