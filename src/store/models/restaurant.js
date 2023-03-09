@@ -97,10 +97,11 @@ const actions = {
     commit("setHasRemainRestaurantData", !data.data.last);
     commit("setRestaurants", data.data.content);
   },
-  async syncRestaurantsByKeywords({ commit }, params) {
+  async syncRestaurantsByKeywords({ commit, state }, params) {
     if (params.id in state.alreadyCallRestaurants) {
       return;
     }
+
     state.alreadyCallRestaurants.push(params.id);
     const { data } = await api.getRestaurantSearch(params);
     commit("setHasRemainRestaurantData", !data.data.last);

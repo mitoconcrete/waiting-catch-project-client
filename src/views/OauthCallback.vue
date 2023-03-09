@@ -6,6 +6,7 @@
 
 <script>
 import { api } from "@/utils/apis.js";
+import { Modal } from "ant-design-vue";
 
 export default {
   name: "oauth-callback",

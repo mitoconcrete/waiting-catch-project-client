@@ -24,10 +24,19 @@ http.interceptors.response.use(
       switch (error.response.status) {
         // status code가 401인 경우 `logout`을 커밋하고 `/login` 페이지로 리다이렉트
         case 400:
-          Modal.error({
-            title: "에러",
-            content: error.response.data.message,
-          });
+          if (error.response.data.message === "사용자를 찾을 수 없습니다.") {
+            Modal.warn({
+              title: "정보 요청",
+              content:
+                "원활한 줄서기를 위해선 더 많은 정보가 필요해요.\n추가 정보들을 입력하여 가입한 뒤, 다음부턴 편하게 구글 로그인을 할 수 있습니다.",
+            });
+          } else {
+            Modal.error({
+              title: "에러",
+              content: error.response.data.message,
+            });
+          }
+
           break;
         case 401:
           window.localStorage.clear();

@@ -148,27 +148,7 @@ export default {
     await this.$store.commit("setIsGlobalLoading", true);
     this.$store.dispatch("initRestaurants");
     if (this.position.latitude == -1 && this.position.longitude == -1) {
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          const { latitude, longitude } = coords;
-          this.$store.dispatch("syncUserPosition", {
-            latitude: latitude,
-            longitude: longitude,
-          });
-        },
-        () => {
-          this.$store.dispatch("syncUserPosition", {
-            latitude: 37.5666805,
-            longitude: 126.9784147,
-          });
-          Modal.warn({
-            title: "위치 권한 허용 요청",
-            content:
-              "저희 서비스는 위치 권한을 허용해야 원활한 이용이 가능합니다. 위치 권한을 허용해주세요.",
-          });
-          console.log("fail");
-        }
-      );
+      this.syncPositionReleatedData();
     } else {
       this.syncData(this.position.latitude, this.position.longitude);
     }
@@ -268,6 +248,31 @@ export default {
       await this.$store.commit("setIsGlobalLoading", true);
       this.getRestaurants(latitude, longitude);
       this.getStringAddress(latitude, longitude);
+    },
+    async syncPositionReleatedData() {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          const { latitude, longitude } = coords;
+          this.$store.dispatch("syncUserPosition", {
+            latitude: latitude,
+            longitude: longitude,
+          });
+        },
+        () => {
+          this.$store.dispatch("syncUserPosition", {
+            latitude: 37.5666805,
+            longitude: 126.9784147,
+          });
+          Modal.warn({
+            title: "위치 권한 허용 요청",
+            content:
+              "저희 서비스는 위치 기반 서비스로서, 위치 권한을 허용해야 원활한 이용이 가능합니다. 위치 권한을 허용해주세요.",
+            onOk: () => {
+              this.syncPositionReleatedData();
+            },
+          });
+        }
+      );
     },
   },
 };

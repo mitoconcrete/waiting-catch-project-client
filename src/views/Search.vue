@@ -28,8 +28,8 @@
       </a-select>
     </section>
     <RestaurantList
-      v-if="datas.length"
-      :datas="datas"
+      v-if="restaurants.length"
+      :datas="restaurants"
       :direction-type="'row'"
     />
     <section v-else class="empty-search-screen">
@@ -79,6 +79,7 @@ for (let i = 1; i <= DATA_COUNT; i++) {
 }
 export default {
   name: "Search",
+  components: { RestaurantList },
   data() {
     return {
       searchKeyword: "",
@@ -92,13 +93,7 @@ export default {
   },
   created() {
     if (this.userPosition.latitude == -1 && this.userPosition.longitude == -1) {
-      navigator.geolocation.getCurrentPosition(({ coords }) => {
-        const { latitude, longitude } = coords;
-        this.$store.dispatch("syncUserPosition", {
-          latitude: latitude,
-          longitude: longitude,
-        });
-      });
+      this.syncPositionReleatedData();
     }
     this.$store.dispatch("initRestaurants");
   },
@@ -121,7 +116,8 @@ export default {
   },
   methods: {
     async onSearch(keyword) {
-      this.syncData(keyword);
+      await this.$store.dispatch("initRestaurants");
+      await this.syncData(keyword);
     },
     onChange(e) {
       const selectTarget = e.target.value;
@@ -148,6 +144,7 @@ export default {
       if (!keyword) {
         return;
       }
+      this.$store.commit("setIsGlobalLoading", true);
       await this.$store.dispatch("syncRestaurantsByKeywords", {
         latitude: this.userPosition.latitude,
         longitude: this.userPosition.longitude,
@@ -155,8 +152,33 @@ export default {
         id: lastId,
       });
       this.datas = this.restaurants;
+      this.$store.commit("setIsGlobalLoading", false);
+    },
+    async syncPositionReleatedData() {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          const { latitude, longitude } = coords;
+          this.$store.dispatch("syncUserPosition", {
+            latitude: latitude,
+            longitude: longitude,
+          });
+        },
+        () => {
+          this.$store.dispatch("syncUserPosition", {
+            latitude: 37.5666805,
+            longitude: 126.9784147,
+          });
+          Modal.warn({
+            title: "위치 권한 허용 요청",
+            content:
+              "저희 서비스는 위치 기반 서비스로서, 위치 권한을 허용해야 원활한 이용이 가능합니다. 위치 권한을 허용해주세요.",
+            onOk: () => {
+              this.syncPositionReleatedData();
+            },
+          });
+        }
+      );
     },
   },
-  components: { RestaurantList },
 };
 </script>
