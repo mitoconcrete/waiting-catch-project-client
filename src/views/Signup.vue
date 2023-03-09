@@ -69,11 +69,36 @@
           placeholder="전화번호을 입력해주세요."
           size="large"
           :value="formState.phoneNumber"
+          style="width: calc(100% - 116px)"
           @change="onInputPhoneNumber"
         />
+        <a-button
+          size="large"
+          :danger="!isValidCodeCheckComplete"
+          @click="requestCreateValidCode"
+          >{{
+            !isValidCodeCheckComplete ? "인증번호요청" : "번호인증완료"
+          }}</a-button
+        >
+      </a-form-item>
+      <a-form-item v-if="isRequestValidCode" name="validCode">
+        <a-input
+          placeholder="인증 번호를 입력해주세요."
+          :addonAfter="remainTime"
+          size="large"
+          v-model:value="validCode"
+          style="width: calc(100% - 60px)"
+        />
+        <a-button
+          type="ghost"
+          size="large"
+          :danger="false"
+          @click="requestCheckValidCode"
+          >확인</a-button
+        >
       </a-form-item>
       <a-form-item style="text-align: right">
-        <a-button type="primary" html-type="submit">가입</a-button>
+        <a-button type="primary" size="large" html-type="submit">가입</a-button>
       </a-form-item>
     </a-form>
   </section>
@@ -95,6 +120,7 @@
 </style>
 
 <script>
+import { Modal } from "ant-design-vue";
 import BackwardButton from "../components/BackwardButton.vue";
 import { api } from "../utils/apis";
 export default {
@@ -126,6 +152,10 @@ export default {
         phoneNumber: this.phoneNumberValidator,
       },
       isEmailFieldDisabled: false,
+      isRequestValidCode: false,
+      isValidCodeCheckComplete: false,
+      remainTime: 300,
+      validCode: "",
     };
   },
   methods: {
@@ -147,6 +177,8 @@ export default {
       }
     },
     onInputPhoneNumber(e) {
+      this.isValidCodeCheckComplete = false;
+      this.isRequestValidCode = false;
       let str = e.target.value.replaceAll("-", "").replace(/[^0-9]/, "");
       let phone = "";
       if (str.length < 4) {
@@ -265,7 +297,74 @@ export default {
       if (!value.match(/^(0[0-99]{1,2})-?([0-9]{3,4})-?([0-9]{4})$/g)) {
         return Promise.reject("올바른 형식을 입력해주세요.");
       }
+      if (!this.isValidCodeCheckComplete) {
+        return Promise.reject("전화번호를 인증해주세요.");
+      }
       return Promise.resolve();
+    },
+    async requestCreateValidCode() {
+      if (!this.formState.phoneNumber) {
+        Modal.error({
+          title: "인증요청 불가",
+          content: "전화번호를 입력해주셔야 인증요청이 가능합니다.",
+        });
+        return;
+      }
+
+      if (
+        !this.formState.phoneNumber.match(
+          /^(0[0-99]{1,2})-?([0-9]{3,4})-?([0-9]{4})$/g
+        )
+      ) {
+        Modal.error({
+          title: "인증요청 불가",
+          content:
+            "전화번호를 올바른 형식으로 입력하셔야 인증요청이 가능합니다.",
+        });
+        return;
+      }
+
+      try {
+        const { data } = await api.createValidCode({
+          phoneNumber: this.formState.phoneNumber,
+        });
+        this.remainTime = parseInt(data.data.remainTime / 1000);
+        const intervalId = setInterval(() => {
+          this.remainTime -= 1;
+          if (!this.remainTime) {
+            clearInterval(intervalId);
+          }
+        }, 1000);
+
+        Modal.success({
+          title: "인증요청성공",
+          content: "문자가 발송되었습니다.",
+        });
+        this.isRequestValidCode = true;
+      } catch (e) {
+        Modal.error({
+          title: "인증요청 실패",
+          content:
+            "전화번호를 올바른 형식으로 입력하셔야 인증요청이 가능합니다.",
+        });
+      }
+    },
+    async requestCheckValidCode() {
+      if (!this.validCode) {
+        Modal.error({
+          title: "검증 실패",
+          content: "인증번호를 입력해주셔야 합니다.",
+        });
+        return;
+      }
+      try {
+        await api.checkValidCode({
+          phoneNumber: this.formState.phoneNumber,
+          validCode: parseInt(this.validCode),
+        });
+        this.isRequestValidCode = false;
+        this.isValidCodeCheckComplete = true;
+      } catch (e) {}
     },
   },
 };

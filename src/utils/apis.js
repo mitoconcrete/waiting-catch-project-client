@@ -127,6 +127,12 @@ export const api = {
       },
     });
   },
+  createValidCode(payload) {
+    return http.post(`/general/valid-code/create`, payload);
+  },
+  checkValidCode(payload) {
+    return http.post(`/general/valid-code/check`, payload);
+  },
   postWaiting(restaurantId, payload) {
     return http.post(`/customer/restaurants/${restaurantId}/lineup`, payload);
   },
