@@ -172,9 +172,6 @@ export default {
             title: "위치 권한 허용 요청",
             content:
               "저희 서비스는 위치 기반 서비스로서, 위치 권한을 허용해야 원활한 이용이 가능합니다. 위치 권한을 허용해주세요.",
-            onOk: () => {
-              this.syncPositionReleatedData();
-            },
           });
         }
       );

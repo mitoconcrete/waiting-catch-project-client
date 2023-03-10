@@ -14,7 +14,7 @@
     >
       <a-form-item
         name="username"
-        :rules="[{ required: true, message: '아이디를 입력하세요.' }]"
+        :rules="[{ required: true, validator: validator.username }]"
       >
         <a-input
           placeholder="아이디를 입력하세요."
@@ -29,7 +29,7 @@
 
       <a-form-item
         name="password"
-        :rules="[{ required: true, message: '패스워드를 입력하세요.' }]"
+        :rules="[{ required: true, validator: validator.password }]"
       >
         <a-input-password
           placeholder="패스워드를 입력하세요."
@@ -135,6 +135,10 @@ export default {
         password: "",
       },
       disabled: false,
+      validator: {
+        username: this.validatortUsername,
+        password: this.validatortPassword,
+      },
     };
   },
   methods: {
@@ -149,6 +153,46 @@ export default {
     onFinishFailed() {},
     moveBackward() {
       this.$router.go(-1);
+    },
+    validatortUsername(rule, value) {
+      if (!value) {
+        return Promise.reject("아이디를 입력하셔야 합니다.");
+      }
+      if (value.length < 4) {
+        return Promise.reject("아이디는 4글자 이상이어야 합니다.");
+      }
+      if (value.length > 15) {
+        return Promise.reject("아이디는 16글자 미만이어야 합니다.");
+      }
+      if (value.match(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$/g)) {
+        return Promise.reject(
+          "이메일형식은 허용하지 않습니다. 회원가입 시 사용하신 아이디를 기입해주세요."
+        );
+      }
+      return Promise.resolve();
+    },
+    validatortPassword(rule, value) {
+      if (!value) {
+        return Promise.reject("패스워드를 입력해주세요.");
+      }
+      if (value.length < 8) {
+        return Promise.reject("패스워드는 8글자 이상이어야 합니다.");
+      }
+      if (value.length > 15) {
+        return Promise.reject("패스워드는 16글자 미만이어야 합니다.");
+      }
+
+      if (
+        !value.match(
+          /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@!%*#?&\-])[A-Za-z0-9$@!%*#?&]{8,15}$/g
+        )
+      ) {
+        return Promise.reject(
+          "하나 이상의 알파벳, 숫자, 특수문자의 조합으로 이뤄져야 합니다."
+        );
+      }
+
+      return Promise.resolve();
     },
   },
   components: { BackwardButton },

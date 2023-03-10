@@ -11,6 +11,8 @@
               ? data.restaurantName.slice(0, 3) + "..."
               : data.restaurantName
           } 전용]`
+        : isDownloadable
+        ? ""
         : "[전체 사용]"
     }}</span>
     <span class="down-button" v-if="isDownloadable"

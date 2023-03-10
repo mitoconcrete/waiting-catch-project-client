@@ -71,9 +71,15 @@ export default {
   created() {
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      Modal.warn({
+      Modal.confirm({
         title: "로그인 요청",
-        content: "로그인 이후 이용가능합니다.",
+        content:
+          "로그인 이후 이용가능합니다. 로그인 페이지로 이동하시겠습니까?",
+        okText: "예",
+        cancelText: "아니오",
+        onOk: () => {
+          this.$router.replace("/login");
+        },
       });
       this.$store.commit("setIsCouponModalStatus", false);
       return;

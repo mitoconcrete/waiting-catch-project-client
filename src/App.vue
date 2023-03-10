@@ -5,7 +5,6 @@ import BottomNav from "./components/BottomNav.vue";
 import MapModal from "./components/modals/MapModal.vue";
 import CouponModal from "./components/modals/CouponModal.vue";
 import SpinnerScreen from "./components/SpinnerScreen.vue";
-import LineupModal from "./components/modals/LineupModal.vue";
 import RestaurantModal from "./components/modals/RestaurantModal.vue";
 
 export default {
@@ -14,7 +13,6 @@ export default {
     MapModal,
     CouponModal,
     SpinnerScreen,
-    LineupModal,
     RestaurantModal,
   },
   computed: {
@@ -23,7 +21,6 @@ export default {
       isCouponModalActive: "getIsCouponModalActive",
       isRestaurantModalActive: "getIsRestaurantModalActive",
       isGlobalLoading: "getIsGlobalLoading",
-      isLineupModalActive: "getIsLineupModalActive",
     }),
   },
   data() {
@@ -57,7 +54,6 @@ export default {
       <SpinnerScreen v-if="isGlobalLoading" />
       <MapModal v-if="isMapModalActive" />
       <CouponModal v-if="isCouponModalActive" />
-      <LineupModal v-if="isLineupModalActive" />
       <RestaurantModal v-if="isRestaurantModalActive" />
       <section class="screen-wrapper" @scroll="handleNotificationListScroll">
         <RouterView :is-bottom="isScrollBottom" />

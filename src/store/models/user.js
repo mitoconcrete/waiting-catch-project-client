@@ -21,7 +21,7 @@ const state = {
   reviews: [],
   waitings: [],
   alreadyCallReviews: [],
-  alreadyCallWaiting: [],
+  alreadyCallWaitingHistories: [],
   hasRemainReviews: false,
   hasRemainWaitingHistories: false,
   allowPositionSetting: false,
@@ -63,7 +63,7 @@ const mutations = {
     state.reviews = [];
   },
   initWaitings(state) {
-    state.alreadyCallWaiting = [];
+    state.alreadyCallWaitingHistories = [];
     state.waitings = [];
   },
 };
@@ -116,7 +116,7 @@ const actions = {
   async logout({ commit }) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
     api.default.setHeadersAuthorization(token);
     await api.logout();
@@ -138,7 +138,7 @@ const actions = {
   async withdraw({ commit }) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
     api.default.setHeadersAuthorization(token);
     await api.deleteCustomer();
@@ -159,7 +159,7 @@ const actions = {
   async syncUserReviews({ commit, state }, params) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
     if (params.lastId in state.alreadyCallReviews) {
       return;
@@ -173,7 +173,7 @@ const actions = {
   async syncUserWaitings({ commit }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
     api.default.setHeadersAuthorization(token);
     const { data } = payload
@@ -184,12 +184,13 @@ const actions = {
   async syncUserWaitingHistories({ commit, state }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
-    }
-    if (payload.lastId in state.alreadyCallWaiting) {
       return;
     }
-    state.alreadyCallWaiting.push(payload.lastId);
+
+    if (state.alreadyCallWaitingHistories.includes(payload.lastId)) {
+      return;
+    }
+    state.alreadyCallWaitingHistories.push(payload.lastId);
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getWaitingHistories(payload);
     commit("setUserWaitingHistories", data.data.content);

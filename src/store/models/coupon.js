@@ -53,7 +53,7 @@ const actions = {
     if (!token) {
       return;
     }
-    if (params.page in state.alreadyCallEvent) {
+    if (state.alreadyCallEvent.includes(params.page)) {
       return;
     }
     state.alreadyCallEvent.push(params.page);

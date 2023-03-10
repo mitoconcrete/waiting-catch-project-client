@@ -4,7 +4,6 @@
       <div></div>
       <strong>{{ position.stringAddress }}</strong>
     </button>
-    <button @click="handleOpenLineupModal" class="lineup-modal-button"></button>
     <button @click="handleOpenCouponModal"></button>
   </header>
   <section class="home-page page-wrapper">
@@ -171,11 +170,11 @@ export default {
     },
     isBottom(value) {
       if (value && this.hasRemainData) {
-        const lastId = this.datas[this.datas.length - 1].id;
+        const lastDistance = this.datas[this.datas.length - 1].distance;
         this.getRestaurants(
           this.position.latitude,
           this.position.longitude,
-          lastId
+          lastDistance
         );
       }
     },
@@ -200,15 +199,12 @@ export default {
     handleOpenCouponModal() {
       this.$store.commit("setIsCouponModalStatus", true);
     },
-    handleOpenLineupModal() {
-      this.$store.commit("setIsLineupModalStatus", true);
-    },
-    async getRestaurants(latitude, longitude, nextIdx) {
+    async getRestaurants(latitude, longitude, lastDistance) {
       await this.$store.dispatch("syncRestaurants", {
         longitude: longitude,
         latitude: latitude,
         size: 10,
-        id: nextIdx,
+        lastDistance: lastDistance,
       });
 
       this.datas = this.restaurants;
@@ -267,9 +263,6 @@ export default {
             title: "위치 권한 허용 요청",
             content:
               "저희 서비스는 위치 기반 서비스로서, 위치 권한을 허용해야 원활한 이용이 가능합니다. 위치 권한을 허용해주세요.",
-            onOk: () => {
-              this.syncPositionReleatedData();
-            },
           });
         }
       );

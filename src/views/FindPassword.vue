@@ -14,7 +14,7 @@
     >
       <a-form-item
         name="username"
-        :rules="[{ required: true, message: '아이디를 입력하세요.' }]"
+        :rules="[{ required: true, validator: validator.username }]"
       >
         <a-input
           placeholder="아이디를 입력하세요."
@@ -29,7 +29,7 @@
 
       <a-form-item
         name="email"
-        :rules="[{ required: true, message: '이메일을 입력하세요.' }]"
+        :rules="[{ required: true, validator: validator.email }]"
       >
         <a-input
           placeholder="이메일을 입력하세요."
@@ -118,10 +118,13 @@ export default {
         username: "",
         email: "",
       },
+      validator: {
+        email: this.validatorEmail,
+        username: this.validatorUsername,
+      },
       disabled: false,
     };
   },
-
   methods: {
     async onFinish() {
       await api.findPassword(this.formState);
@@ -133,7 +136,33 @@ export default {
     },
     onFinishFailed() {},
     moveBackward() {
-      this.$router.go(-1);
+      this.$router.replace("/login");
+    },
+    validatorUsername(rule, value) {
+      if (!value) {
+        return Promise.reject("아이디를 입력하셔야 합니다.");
+      }
+      if (value.length < 4) {
+        return Promise.reject("아이디는 4글자 이상이어야 합니다.");
+      }
+      if (value.length > 15) {
+        return Promise.reject("아이디는 16글자 미만이어야 합니다.");
+      }
+      if (value.match(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$/g)) {
+        return Promise.reject(
+          "이메일형식은 허용하지 않습니다. 회원가입 시 사용하신 아이디를 기입해주세요."
+        );
+      }
+      return Promise.resolve();
+    },
+    validatorEmail(rule, value) {
+      if (!value) {
+        return Promise.reject("이메일을 입력해주세요.");
+      }
+      if (!value.match(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$/g)) {
+        return Promise.reject("올바른 형식을 입력해주세요.");
+      }
+      return Promise.resolve();
     },
   },
 };

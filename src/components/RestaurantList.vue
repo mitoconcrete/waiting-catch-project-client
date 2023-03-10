@@ -9,7 +9,7 @@
       <section
         class="photo-section"
         :style="{
-          backgroundImage: `url(${data.imageUrl})`,
+          backgroundImage: `url(${data.imageUrl[0]})`,
         }"
       >
         <span
@@ -57,9 +57,15 @@ export default {
     async handleClick(restaurantId) {
       const token = window.localStorage.getItem("accessToken");
       if (!token) {
-        Modal.warn({
+        Modal.confirm({
           title: "로그인 요청",
-          content: "로그인 이후 이용가능합니다.",
+          content:
+            "로그인 이후 이용가능합니다. 로그인 페이지로 이동하시겠습니까?",
+          okText: "예",
+          cancelText: "아니오",
+          onOk: () => {
+            this.$router.replace("/login");
+          },
         });
         return;
       }

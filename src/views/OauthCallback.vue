@@ -31,12 +31,12 @@ export default {
               this.$router.replace("/signup?email=" + email);
               return;
             }
-          } catch (e) {
+          } catch (error) {
             this.$router.replace("/signup?email=" + email);
             return;
           }
         }
-      } catch (e) {
+      } catch (error) {
         console.error("Token is Expired");
         this.$router.push("/login");
         return;

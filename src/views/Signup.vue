@@ -63,13 +63,14 @@
       </a-form-item>
       <a-form-item
         name="phoneNumber"
+        ref="phoneNumberRef"
         :rules="[{ required: true, validator: validator.phoneNumber }]"
       >
         <a-input
           placeholder="전화번호을 입력해주세요."
           size="large"
           :value="formState.phoneNumber"
-          style="width: calc(100% - 116px)"
+          style="width: calc(100% - 123px)"
           @change="onInputPhoneNumber"
         />
         <a-button
@@ -87,7 +88,7 @@
           :addonAfter="remainTime"
           size="large"
           v-model:value="validCode"
-          style="width: calc(100% - 60px)"
+          style="width: calc(100% - 65px)"
         />
         <a-button
           type="ghost"
@@ -133,6 +134,14 @@ export default {
       this.isEmailFieldDisabled = true;
     }
   },
+  watch: {
+    isValidCodeCheckComplete(value) {
+      if (value) {
+        this.$refs["phoneNumberRef"].onFieldChange();
+        this.$refs["phoneNumberRef"].onFieldBlur();
+      }
+    },
+  },
   data() {
     return {
       formState: {
@@ -169,11 +178,11 @@ export default {
             password: this.formState.password,
           });
           this.$router.replace("/");
-        } catch (e) {
-          throw new Error(e);
+        } catch (error) {
+          this.$store.commit("setIsGlobalLoading", false);
         }
-      } catch (e) {
-        throw new Error(e);
+      } catch (error) {
+        this.$store.commit("setIsGlobalLoading", false);
       }
     },
     onInputPhoneNumber(e) {
@@ -303,6 +312,7 @@ export default {
       return Promise.resolve();
     },
     async requestCreateValidCode() {
+      this.isValidCodeCheckComplete = false;
       if (!this.formState.phoneNumber) {
         Modal.error({
           title: "인증요청 불가",
@@ -341,7 +351,7 @@ export default {
           content: "문자가 발송되었습니다.",
         });
         this.isRequestValidCode = true;
-      } catch (e) {
+      } catch (error) {
         Modal.error({
           title: "인증요청 실패",
           content:
@@ -364,7 +374,9 @@ export default {
         });
         this.isRequestValidCode = false;
         this.isValidCodeCheckComplete = true;
-      } catch (e) {}
+      } catch (error) {
+        this.$store.commit("setIsGlobalLoading", false);
+      }
     },
   },
 };

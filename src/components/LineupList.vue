@@ -1,92 +1,98 @@
-<template lang="">
-  <Modal
-    v-model:visible="isModalVisible"
-    title="리뷰 생성"
-    @cancel="cancelRegister"
-    :footer="null"
-  >
-    <a-form
-      :model="formState"
-      name="validate_other"
-      @finishFailed="onFinishFailed"
-      @finish="onFinish"
+<template>
+  <div>
+    <Modal
+      v-model:visible="isModalVisible"
+      title="리뷰 생성"
+      @cancel="cancelRegister"
+      :footer="null"
     >
-      <a-form-item label="방문매장">
-        {{ reviewTarget.name }}
-      </a-form-item>
-      <a-form-item label="방문일시">
-        {{ reviewTarget.arrivedAt }}
-      </a-form-item>
-      <a-form-item
-        label="리뷰작성"
-        :rules="[{ required: true, message: '리뷰를 입력해주세요.' }]"
+      <a-form
+        :model="formState"
+        name="validate_other"
+        @finishFailed="onFinishFailed"
+        @finish="onFinish"
       >
-        <a-textarea v-model:value="formState.content" auto-size />
-      </a-form-item>
-      <a-form-item
-        label="별점"
-        :rules="[{ required: true, message: '점수를 매겨주세요' }]"
+        <a-form-item label="방문매장">
+          {{ reviewTarget.name }}
+        </a-form-item>
+        <a-form-item label="방문일시">
+          {{ reviewTarget.arrivedAt }}
+        </a-form-item>
+        <a-form-item
+          label="리뷰작성"
+          :rules="[{ required: true, message: '리뷰를 입력해주세요.' }]"
+        >
+          <a-textarea v-model:value="formState.content" auto-size />
+        </a-form-item>
+        <a-form-item
+          label="별점"
+          :rules="[{ required: true, message: '점수를 매겨주세요' }]"
+        >
+          <a-rate v-model:value="formState.rate" />
+        </a-form-item>
+        <a-form-item name="upload" label="사진첨부">
+          <a-upload
+            v-model:fileList="formState.upload"
+            name="logo"
+            list-type="picture"
+            accept=".png, .jpg, .jpeg"
+          >
+            <a-button>
+              <template #icon><UploadOutlined /></template>
+            </a-button>
+          </a-upload>
+        </a-form-item>
+        <a-form-item style="text-align: right">
+          <a-button type="primary" html-type="submit">제출</a-button>
+        </a-form-item>
+      </a-form>
+    </Modal>
+    <ul class="lineup-list">
+      <li
+        v-for="(data, index) in datas"
+        class="lineup"
+        @click="handleReviewModal(data, index)"
       >
-        <a-rate v-model:value="formState.rate" />
-      </a-form-item>
-      <a-form-item name="upload" label="사진첨부">
-        <a-upload
-          v-model:fileList="formState.upload"
-          name="logo"
-          list-type="picture"
-          accept=".png, .jpg, .jpeg"
-        >
-          <a-button>
-            <template #icon><UploadOutlined /></template>
-          </a-button>
-        </a-upload>
-      </a-form-item>
-      <a-form-item style="text-align: right">
-        <a-button type="primary" html-type="submit">제출</a-button>
-      </a-form-item>
-    </a-form>
-  </Modal>
-  <ul class="lineup-list">
-    <li v-for="data in datas" class="lineup" @click="handleReviewModal(data)">
-      <h1>{{ data.restaurantName }}</h1>
-      <p>{{ data.numOfMembers }}명</p>
-      <p class="time-string">
-        <strong>줄서기 시작 시간 :</strong>
-        {{
-          dateFormatter(
-            new Date(data.startedAt),
-            "yyyy년 MM월 dd일 eee요일, h시 m분"
-          )
-        }}
-      </p>
-      <p class="time-string">
-        <strong>줄서기 종료 시간 :</strong>
-        {{
-          data.arrivedAt
-            ? dateFormatter(
-                new Date(data.arrivedAt),
-                "yyyy년 MM월 dd일 eee요일, h시 m분"
-              )
-            : "-"
-        }}
-      </p>
-      <div class="badge-wrapper">
-        <p
-          v-if="data.reviewed && data.status === 'ARRIVE'"
-          class="badge review-badge complete"
-        >
-          리뷰 완료
+        <h1>{{ data.restaurantName }}</h1>
+        <p>{{ data.numOfMembers }}명</p>
+        <p class="time-string">
+          <strong>줄서기 시작 시간 :</strong>
+          {{
+            dateFormatter(
+              new Date(data.startedAt),
+              "yyyy년 MM월 dd일 eee요일, h시 m분"
+            )
+          }}
         </p>
-        <p
-          v-else-if="!data.reviewed && data.status === 'ARRIVE'"
-          class="badge review-badge required"
-        >
-          리뷰 가능
+        <p class="time-string">
+          <strong>줄서기 종료 시간 :</strong>
+          {{
+            data.arrivedAt
+              ? dateFormatter(
+                  new Date(data.arrivedAt),
+                  "yyyy년 MM월 dd일 eee요일, h시 m분"
+                )
+              : "-"
+          }}
         </p>
-        <p class="badge status-badge">{{ status[data.status] }}</p>
-      </div>
-    </li>
-  </ul>
+        <div class="badge-wrapper">
+          <p
+            v-if="data.reviewed && data.status === 'ARRIVE'"
+            class="badge review-badge complete"
+          >
+            리뷰 완료
+          </p>
+          <p
+            v-else-if="!data.reviewed && data.status === 'ARRIVE'"
+            class="badge review-badge required"
+          >
+            리뷰 가능
+          </p>
+          <p class="badge status-badge">{{ status[data.status] }}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 <script>
 import { dateFormatter } from "@/utils/date.js";
@@ -103,15 +109,18 @@ export default {
   },
   methods: {
     dateFormatter,
-    handleReviewModal({
-      restaurantId: id,
-      restaurantName: name,
-      status,
-      reviewed,
-      arrivedAt,
-      type,
-      id: lineupId,
-    }) {
+    handleReviewModal(
+      {
+        restaurantId: id,
+        restaurantName: name,
+        status,
+        reviewed,
+        arrivedAt,
+        type,
+        id: lineupId,
+      },
+      index
+    ) {
       if (status != "ARRIVE") {
         this.$emit("inactive", id);
         return;
@@ -124,13 +133,17 @@ export default {
         });
         return;
       }
+
       this.reviewTarget = {
+        index,
         id,
         name,
-        arrivedAt: this.dateFormatter(
-          new Date(arrivedAt),
-          "yyyy년 MM월 dd일 eee요일, h시 m분"
-        ),
+        arrivedAt: arrivedAt
+          ? this.dateFormatter(
+              new Date(arrivedAt),
+              "yyyy년 MM월 dd일 eee요일, h시 m분"
+            )
+          : "-",
         lineupId,
         type,
       };
@@ -154,7 +167,6 @@ export default {
         images: imageList,
       };
 
-      //   console.log(this.reviewTarget);
       const token = localStorage.getItem("accessToken");
       if (!token) {
         return this.$router.replace("/login");
@@ -177,13 +189,11 @@ export default {
           title: "업데이트 성공",
           content: "리뷰를 성공적으로 업데이트 했습니다.",
         });
+        this.datas[this.reviewTarget.index].reviewed = true;
         this.resetValue();
         this.isModalVisible = false;
-      } catch (e) {
-        Modal.error({
-          title: "업데이트 실패",
-          content: "리뷰 업데이트에 실패했습니다. 다시시도해주세요.",
-        });
+      } catch (error) {
+        throw new Error(error);
       }
     },
     onFinishFailed() {
@@ -224,6 +234,7 @@ export default {
         rate: 0,
       },
       reviewTarget: {
+        index: 0,
         id: 0,
         name: "",
         arrivedAt: "",

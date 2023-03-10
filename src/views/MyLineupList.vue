@@ -3,7 +3,14 @@
     <section class="nav-wrapper">
       <BackwardButton @click="moveBackward" message="나의 줄서기 내역" />
     </section>
-    <LineupList :datas="datas" @inactive="handleInActive" />
+    <a-tabs v-model:activeKey="activeKey">
+      <a-tab-pane key="1" tab="오늘의 줄서기 내역">
+        <LineupList :datas="datas" @inactive="handleWaitingInActive" />
+      </a-tab-pane>
+      <a-tab-pane key="2" tab="과거 줄서기 내역" force-render>
+        <LineupList :datas="datas" @inactive="handleHistioyInActive" />
+      </a-tab-pane>
+    </a-tabs>
   </div>
 </template>
 <script>
@@ -44,17 +51,8 @@ export default {
     moveBackward() {
       this.$router.push("/info");
     },
-    async syncData(id) {
-      const token = window.localStorage.getItem("accessToken");
-      if (!token) {
-        Modal.warn({
-          title: "로그인 요청",
-          content: "로그인 이후 이용가능합니다.",
-        });
-        this.$router.replace("/info");
-        return;
-      }
-      api.default.setHeadersAuthorization(token);
+    async syncWaitingHistories(id) {
+      this.checkAndSetAccessToken();
       const payload = {
         size: 10,
         lastId: id,
@@ -64,38 +62,90 @@ export default {
         (a, b) => b.lineupId - a.lineupId
       );
     },
-    reSyncData() {
-      this.$store.dispatch("initWaitings");
-      this.syncData();
+    async syncWaitings() {
+      this.checkAndSetAccessToken();
+      await this.$store.dispatch("syncUserWaitings");
+      this.datas = this.userWaitings.sort((a, b) => b.lineupId - a.lineupId);
     },
-    handleInActive() {
+    initWaitingHistories() {
+      this.$store.dispatch("initWaitings");
+      this.syncWaitingHistories();
+    },
+    initWaitings() {
+      this.$store.dispatch("initWaitings");
+      this.syncWaitings();
+    },
+    handleHistioyInActive() {
       Modal.error({
         title: "리뷰 불가",
         content: "입장완료한 줄서기 내역에만 리뷰를 추가할 수 있습니다.",
       });
     },
+    async handleWaitingInActive(restaurantId) {
+      await this.$store.dispatch("syncRestaurantBasicInfo", restaurantId);
+      await this.$store.dispatch("syncRestaurantDetailInfo", restaurantId);
+      this.$store.commit("setIsRestaurantModalStatus", true);
+    },
+    checkAndSetAccessToken() {
+      const token = window.localStorage.getItem("accessToken");
+      api.default.setHeadersAuthorization(token);
+    },
   },
   computed: {
     ...mapGetters({
+      userWaitings: "getUserWaitings",
       userWaitingHistories: "getUserWaitingHistories",
-      hasRemainData: "getHasRemainWaitingHistories",
+      hasRemainWaitingHistoryData: "getHasRemainWaitingHistories",
     }),
-  },
-  async created() {
-    this.reSyncData();
   },
   watch: {
     isBottom(value) {
       // console.log(value, this.hasRemainData);
-      if (value && this.hasRemainData) {
-        const lastId = this.datas[this.datas.length - 1].id;
-        this.syncData(lastId);
+      if (value) {
+        if (this.activeKey === "1") {
+          return;
+        } else {
+          if (this.hasRemainWaitingHistoryData) {
+            const lastId = this.datas[this.datas.length - 1].id;
+            this.syncWaitingHistories(lastId);
+          }
+        }
       }
     },
+
+    activeKey: {
+      immediate: true,
+      handler: function (value) {
+        if (value === "1") {
+          this.initWaitings();
+        } else {
+          this.initWaitingHistories();
+        }
+      },
+    },
+  },
+  created() {
+    const token = window.localStorage.getItem("accessToken");
+    if (!token) {
+      Modal.confirm({
+        title: "로그인 요청",
+        content:
+          "로그인 이후 이용가능합니다. 로그인 페이지로 이동하시겠습니까?",
+        okText: "예",
+        cancelText: "아니오",
+        onOk: () => {
+          this.$router.replace("/login");
+          return;
+        },
+      });
+      this.$router.replace("/info");
+      return;
+    }
   },
   data() {
     return {
       datas: [],
+      activeKey: "1",
     };
   },
 };

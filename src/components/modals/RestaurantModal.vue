@@ -24,7 +24,7 @@
     >
       <div
         class="image-wrapper"
-        :style="{ backgroundImage: `url(${restaurantBasic.images})` }"
+        :style="{ backgroundImage: `url(${restaurantBasic.images[0]})` }"
       ></div>
       <article class="information-wrapper">
         <div>
@@ -238,16 +238,18 @@ export default {
     },
     async requestWaiting() {
       /* Production : 줄서기 시 자신의 현재위치 기반으로 체크 */
-      try {
-        navigator.geolocation.getCurrentPosition(async ({ coords }) => {
-          const token = localStorage.getItem("accessToken");
-          api.default.setHeadersAuthorization(token);
-          const { latitude, longitude } = coords;
-          const payload = {
-            latitude: latitude,
-            longitude: longitude,
-            numOfMember: this.enterCount,
-          };
+
+      await this.$store.commit("setIsGlobalLoading", true);
+      navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+        const token = localStorage.getItem("accessToken");
+        api.default.setHeadersAuthorization(token);
+        const { latitude, longitude } = coords;
+        const payload = {
+          latitude: latitude,
+          longitude: longitude,
+          numOfMember: this.enterCount,
+        };
+        try {
           await api.postWaiting(this.restaurantDetail.id, payload);
           Modal.success({
             title: "줄서기 성공",
@@ -258,10 +260,11 @@ export default {
             },
           });
           this.isCurrentRestaurantWaiting();
-        });
-      } catch (e) {
-        throw new Error(e);
-      }
+        } catch (error) {
+          this.$store.commit("setIsGlobalLoading", false);
+        }
+      });
+
       /* Test : 줄서기 시 자신의 설정위치 기반으로 체크 */
       // try {
       //   const token = localStorage.getItem("accessToken");
@@ -309,13 +312,15 @@ export default {
           });
           return;
         }
+        this.$store.commit("setIsGlobalLoading", true);
         await api.deleteWaiting(this.lineupId);
+        this.$store.commit("setIsGlobalLoading", false);
         Modal.success({
           title: "취소 성공",
           content: "줄서기 취소에 성공했습니다.",
         });
-      } catch (e) {
-        throw new Error(e);
+      } catch (error) {
+        this.$store.commit("setIsGlobalLoading", false);
       }
     },
     async isCurrentRestaurantWaiting() {

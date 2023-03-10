@@ -88,7 +88,7 @@ const getters = {
 
 const actions = {
   async syncRestaurants({ commit, state }, params) {
-    if (params.id in state.alreadyCallRestaurants) {
+    if (state.alreadyCallRestaurants.includes(params.id)) {
       return;
     }
     state.alreadyCallRestaurants.push(params.id);
@@ -98,7 +98,7 @@ const actions = {
     commit("setRestaurants", data.data.content);
   },
   async syncRestaurantsByKeywords({ commit, state }, params) {
-    if (params.id in state.alreadyCallRestaurants) {
+    if (state.alreadyCallRestaurants.includes(params.id)) {
       return;
     }
 
@@ -110,7 +110,7 @@ const actions = {
   async syncRestaurantBasicInfo({ commit }, restaurantId) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantBasicInfo(restaurantId);
@@ -119,7 +119,7 @@ const actions = {
   async syncRestaurantDetailInfo({ commit }, restaurantId) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantDetailInfo(restaurantId);
@@ -128,7 +128,7 @@ const actions = {
   async syncRestaurantMenus({ commit }, restaurantId) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
     api.default.setHeadersAuthorization(token);
     const { data } = await api.getRestaurantMenus(restaurantId);
@@ -137,10 +137,10 @@ const actions = {
   async syncRestaurantReviews({ commit, state }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
 
-    if (payload.lastId in state.alreadyCallReviews) {
+    if (state.alreadyCallReviews.includes(payload.lastId)) {
       return;
     }
     state.alreadyCallReviews.push(payload.lastId);
@@ -152,9 +152,9 @@ const actions = {
   async syncRestaurantEvents({ commit, state }, payload) {
     const token = window.localStorage.getItem("accessToken");
     if (!token) {
-      return (window.location.href = "/login");
+      return;
     }
-    if (payload.page in state.alreadyCallEvents) {
+    if (state.alreadyCallEvents.includes(payload.page)) {
       return;
     }
     state.alreadyCallEvents.push(payload.page);

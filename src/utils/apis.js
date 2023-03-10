@@ -19,7 +19,7 @@ http.interceptors.response.use(
     // 응답 데이터가 있는 작업 수행
     return response;
   },
-  function (error) {
+  async function (error) {
     if (error.response && error.response.status) {
       switch (error.response.status) {
         // status code가 401인 경우 `logout`을 커밋하고 `/login` 페이지로 리다이렉트
@@ -36,17 +36,33 @@ http.interceptors.response.use(
               content: error.response.data.message,
             });
           }
-
-          break;
+          throw new Error(error);
         case 401:
           window.localStorage.clear();
-          window.location.href = "/login";
+          Modal.confirm({
+            title: "로그인 요청",
+            content:
+              "로그인 이후 이용가능합니다. 로그인 페이지로 이동하시겠습니까?",
+            okText: "예",
+            cancelText: "아니오",
+            onOk: () => {
+              window.location.href = "/login";
+            },
+          });
           break;
         default:
-          return Promise.reject(error);
+          Modal.error({
+            title: "에러",
+            content: "서버에 문제가 발생했습니다. 관리자에게 문의해주세요",
+          });
+          break;
       }
+    } else {
+      Modal.error({
+        title: "에러",
+        content: "서버에 문제가 발생했습니다. 관리자에게 문의해주세요",
+      });
     }
-    return Promise.reject(error);
   }
 );
 

@@ -29,7 +29,9 @@ export default {
   methods: {
     async downloadCoupon({ id, name }) {
       if (this.isDownloadable) {
+        await this.$store.commit("setIsGlobalLoading", true);
         await this.$store.dispatch("downloadCoupon", id);
+        await this.$store.commit("setIsGlobalLoading", false);
         Modal.success({
           title: "다운로드 성공",
           content: "쿠폰이 성공적으로 다운로드 되었습니다.",
@@ -44,7 +46,9 @@ export default {
           cancelText: "아니오",
           onOk: async () => {
             try {
+              await this.$store.commit("setIsGlobalLoading", true);
               await api.putCoupon(id);
+              await this.$store.commit("setIsGlobalLoading", false);
               Modal.success({
                 title: "사용 완료",
                 content: "쿠폰이 성공적으로 사용 되었습니다.",
@@ -52,7 +56,9 @@ export default {
               setTimeout(async () => {
                 await this.$store.dispatch("syncMyCoupons");
               }, 1000);
-            } catch (err) {}
+            } catch (error) {
+              throw new Error(error);
+            }
           },
         });
       }
