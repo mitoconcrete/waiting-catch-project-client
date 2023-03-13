@@ -88,10 +88,10 @@ const getters = {
 
 const actions = {
   async syncRestaurants({ commit, state }, params) {
-    if (state.alreadyCallRestaurants.includes(params.id)) {
+    if (state.alreadyCallRestaurants.includes(params.lastDistance)) {
       return;
     }
-    state.alreadyCallRestaurants.push(params.id);
+    state.alreadyCallRestaurants.push(params.lastDistance);
     api.default.deleteHeadersAuthorization();
     const { data } = await api.getRestaurants(params);
     commit("setHasRemainRestaurantData", !data.data.last);

@@ -169,6 +169,7 @@ export default {
       }
     },
     isBottom(value) {
+      // console.log(value, this.hasRemainData);
       if (value && this.hasRemainData) {
         const lastDistance = this.datas[this.datas.length - 1].distance;
         this.getRestaurants(

@@ -49,19 +49,20 @@ http.interceptors.response.use(
               window.location.href = "/login";
             },
           });
-          break;
+          throw new Error(error);
         default:
           Modal.error({
             title: "에러",
             content: "서버에 문제가 발생했습니다. 관리자에게 문의해주세요",
           });
-          break;
+          throw new Error(error);
       }
     } else {
       Modal.error({
         title: "에러",
         content: "서버에 문제가 발생했습니다. 관리자에게 문의해주세요",
       });
+      throw new Error(error);
     }
   }
 );

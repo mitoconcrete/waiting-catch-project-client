@@ -251,6 +251,7 @@ export default {
         };
         try {
           await api.postWaiting(this.restaurantDetail.id, payload);
+          this.$store.commit("setIsGlobalLoading", false);
           Modal.success({
             title: "줄서기 성공",
             content:
